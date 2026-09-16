@@ -8,15 +8,19 @@
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
 
-  // Statement section: scroll-driven pinned crossfade between the 3 article states.
-  // Purely scroll-position-linked (no buttons/autoplay/carousel) — the track container
-  // (.cs-statement__articles) is 300vh tall while .cs-statement__list is sticky, so
-  // scrolling through the track slides scroll-progress from 0 to 1 while the section
-  // stays pinned; each article gets a triangular opacity centered on its own scroll
-  // segment so neighboring states crossfade.
+  // Statement section: scroll-driven pinned stacking transition between the 3 article
+  // states. Purely scroll-position-linked (no buttons/autoplay/carousel) — the track
+  // container (.cs-statement__articles) is 300vh tall (3 states x 100vh) while
+  // .cs-statement__list is sticky and exactly 100vh, so scrolling through the track
+  // slides scroll-progress from 0 to 1 while the section stays pinned. Article 0 rests
+  // in place at translateY(0); each subsequent article starts fully below the viewport
+  // (translateY(100%)) and slides up to translateY(0) as scroll progress crosses its own
+  // [i-1, i] segment, stacking over (higher z-index than) the article(s) beneath it —
+  // a "cards dealt from below" push-up effect instead of an opacity crossfade.
   const statementTrack = document.querySelector('.cs-statement__articles');
   const statementArticles = document.querySelectorAll('.cs-statement__articles .cs-article');
   const reduceMotionMq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const smoothstep = (t) => t * t * (3 - 2 * t);
 
   const updateStatementScroll = () => {
     if (!statementTrack || !statementArticles.length || reduceMotionMq.matches) return;
@@ -27,8 +31,14 @@
     const progress = scrollable > 0 ? Math.min(1, Math.max(0, -rect.top / scrollable)) : 0;
     const value = progress * (n - 1);
     statementArticles.forEach((el, i) => {
-      const opacity = Math.min(1, Math.max(0, 1 - Math.abs(value - i)));
-      el.style.opacity = String(opacity);
+      if (i === 0) {
+        el.style.transform = 'translateY(0)';
+        return;
+      }
+      const local = Math.min(1, Math.max(0, value - (i - 1)));
+      const eased = smoothstep(local);
+      const translateY = 100 * (1 - eased);
+      el.style.transform = `translateY(${translateY}%)`;
     });
   };
   updateStatementScroll();

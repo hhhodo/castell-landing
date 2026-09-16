@@ -94,19 +94,36 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
 .cs-statement__list{display:flex;flex-direction:column;gap:var(--space-10);width:100%;}
 .cs-article{display:flex;gap:var(--space-10);align-items:center;flex-wrap:wrap;}
 
-/* Scroll-driven pinned crossfade (matches GigaVis reference node 184:1172/1173/1190/1205:
-   3 Article blocks stacked at identical coordinates, swapped via scroll progress).
-   Gated behind prefers-reduced-motion: no-preference — reduced-motion users keep the
-   plain stacked flow above (styles.css already establishes this fallback pattern). */
+/* Scroll-driven pinned stacking transition (matches GigaVis reference node 184:1172/1173/1190/1205:
+   3 Article blocks stacked at identical coordinates). Track is 300vh = 3 states x 100vh;
+   .cs-statement__list is the pinned "screen" and stays exactly 100vh so every one of the
+   3 states reads as a full-viewport screen while pinned. Each subsequent article slides up
+   from below the viewport (translateY 100% -> 0) and stacks on top of the previous one
+   (rising z-index), rather than crossfading. Gated behind prefers-reduced-motion: no-preference
+   — reduced-motion users keep the plain stacked flow above (styles.css already establishes
+   this fallback pattern). */
 @media (prefers-reduced-motion:no-preference){
   .cs-statement__articles{position:relative;height:300vh;padding-top:0;display:block;}
   .cs-statement__list{position:sticky;top:0;height:100vh;gap:0;justify-content:center;overflow:clip;}
-  .cs-article{position:absolute;inset:0;margin:auto;height:fit-content;max-height:100%;opacity:0;will-change:opacity;}
+  .cs-article{position:absolute;inset:0;margin:auto;height:fit-content;max-height:100%;
+    opacity:1;transform:translateY(100%);will-change:transform;}
+  .cs-article:first-of-type{transform:translateY(0);}
+  .cs-article:nth-of-type(1){z-index:1;}
+  .cs-article:nth-of-type(2){z-index:2;}
+  .cs-article:nth-of-type(3){z-index:3;}
 }
 .cs-article__figure{position:relative;flex:1 1 420px;max-width:1100px;aspect-ratio:978/599;
   border-radius:var(--radius-sm);overflow:clip;background:var(--cs-placeholder);}
 .cs-article__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
-.cs-article__figcaption{position:absolute;inset:0;background:var(--cs-overlay-20);
+/* Edge gradient so the card blends continuously into the section's dark background
+   instead of sitting as a hard-edged rectangle — soft fade to var(--cs-dark) on all
+   four edges, layered above the photo and below the dim overlay + caption content. */
+.cs-article__figure::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    linear-gradient(to right, var(--cs-dark), transparent 18%, transparent 82%, var(--cs-dark)),
+    linear-gradient(to bottom, var(--cs-dark), transparent 18%, transparent 82%, var(--cs-dark));
+  background-blend-mode:screen;}
+.cs-article__figcaption{position:absolute;inset:0;z-index:2;background:var(--cs-overlay-20);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-7);}
 .cs-article__figcaption h3{color:var(--cs-white);font-weight:var(--cs-fw-base);text-align:center;letter-spacing:var(--tracking-kr);
   font-size:var(--fs-h2);line-height:var(--lh-h2);}
