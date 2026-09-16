@@ -141,7 +141,7 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
 .cs-solution__video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;}
 .cs-solution__figure::after{content:"";position:absolute;inset:0;z-index:0;background:var(--cs-overlay-20);}
 .cs-solution__caption{position:relative;z-index:1;color:var(--cs-white);text-align:center;font-weight:var(--cs-fw-base);
-  letter-spacing:var(--tracking-kr);opacity:.89;font-size:var(--fs-h2);line-height:var(--lh-h2);}
+  letter-spacing:var(--tracking-kr);opacity:.89;font-size:80px;line-height:1.3;}
 
 /* ---------- 글로벌 워드마크 + 정보 카드 ---------- */
 .cs-global{background:var(--cs-white);display:flex;flex-direction:column;align-items:center;}
