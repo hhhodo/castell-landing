@@ -30,15 +30,47 @@
     const scrollable = rect.height - vh;
     const progress = scrollable > 0 ? Math.min(1, Math.max(0, -rect.top / scrollable)) : 0;
     const value = progress * (n - 1);
+
+    // "own" incoming-rise progress per article (0 = still waiting below viewport,
+    // 1 = fully landed at translateY(0)). Article 0 starts already landed.
+    const ownEased = new Array(n).fill(0);
+    ownEased[0] = 1;
+    for (let i = 1; i < n; i++) {
+      const local = Math.min(1, Math.max(0, value - (i - 1)));
+      ownEased[i] = smoothstep(local);
+    }
+
     statementArticles.forEach((el, i) => {
+      const copy = el.querySelector('.cs-article__copy');
       if (i === 0) {
         el.style.transform = 'translateY(0)';
-        return;
+      } else {
+        // Use vh (viewport-relative), not % (own-element-relative): the article's own
+        // height is set by its image aspect-ratio, which is far shorter than the 100vh
+        // pinned viewport, so a %-based translate only pushed "hidden" articles down by
+        // their own height — leaving them still partially inside the viewport, stacked
+        // behind/beside the active article. Translating by vh guarantees the inactive
+        // article's box fully clears the sticky viewport regardless of its own content
+        // height.
+        const translateY = 100 * (1 - ownEased[i]);
+        el.style.transform = `translateY(${translateY}vh)`;
       }
-      const local = Math.min(1, Math.max(0, value - (i - 1)));
-      const eased = smoothstep(local);
-      const translateY = 100 * (1 - eased);
-      el.style.transform = `translateY(${translateY}%)`;
+      // The image side self-hides correctly once stacked: a later article's opaque
+      // photo physically covers the earlier one at the same resting position. But
+      // .cs-article__copy has no background — once two articles land at the same
+      // spot, both captions render at full opacity on top of each other (the reported
+      // bug: all 3 paragraphs visible/overlapping at once). The caption text is
+      // structurally a sibling of the figure within the same .cs-article, but visually
+      // needs independent show/hide logic instead of relying on the image's opaque
+      // cover-up. Crossfade each article's own caption in via its own ownEased, and
+      // fade it back out as soon as the next article starts landing on top of it, so
+      // at any scroll position only the current front (or actively transitioning)
+      // caption is visible.
+      if (copy) {
+        const successorEased = i + 1 < n ? ownEased[i + 1] : 0;
+        const copyOpacity = Math.max(0, Math.min(1, ownEased[i] * (1 - successorEased)));
+        copy.style.opacity = String(copyOpacity);
+      }
     });
   };
   updateStatementScroll();

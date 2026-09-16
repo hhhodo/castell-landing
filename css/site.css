@@ -106,7 +106,7 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
   .cs-statement__articles{position:relative;height:300vh;padding-top:0;display:block;}
   .cs-statement__list{position:sticky;top:0;height:100vh;gap:0;justify-content:center;overflow:clip;}
   .cs-article{position:absolute;inset:0;margin:auto;height:fit-content;max-height:100%;
-    opacity:1;transform:translateY(100%);will-change:transform;}
+    opacity:1;transform:translateY(100vh);will-change:transform;}
   .cs-article:first-of-type{transform:translateY(0);}
   .cs-article:nth-of-type(1){z-index:1;}
   .cs-article:nth-of-type(2){z-index:2;}
@@ -133,6 +133,13 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
   font-weight:var(--cs-fw-base);letter-spacing:var(--tracking-kr);white-space:nowrap;}
 .cs-article__copy{flex:1 1 320px;color:var(--cs-white);font-weight:var(--cs-fw-base);letter-spacing:var(--tracking-kr);
   font-size:var(--fs-h2);line-height:var(--lh-h2);}
+/* Caption opacity is driven per-scroll-frame by JS (see updateStatementScroll) so only
+   the current front/transitioning article's text is visible — the image side hides via
+   the translateY stack instead, since an opaque photo naturally covers the one beneath,
+   but plain text has no background and would otherwise show through. */
+@media (prefers-reduced-motion:no-preference){
+  .cs-article__copy{will-change:opacity;}
+}
 
 /* ---------- full-bleed dark solution image + product lineup ---------- */
 .cs-solution{position:relative;background:var(--cs-dark);overflow:clip;}
