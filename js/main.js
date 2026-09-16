@@ -139,10 +139,14 @@
     }
     const rect = collageSection.getBoundingClientRect();
     const vh = window.innerHeight;
-    // Scroll range: from the moment the section's bottom enters the viewport
-    // to the moment its bottom reaches the top (i.e. as it scrolls fully past).
-    const start = rect.height + vh * 0.15;
-    const end = vh * 0.4;
+    // Scroll range: gated on the section's own live position rather than its raw
+    // height-based offset (the same early-trigger bug fixed on the dark card
+    // below) — start counting once the section has scrolled up to roughly the
+    // vertical center of the viewport, so the collage doesn't begin revealing
+    // while it's still below the fold.
+    const centerTriggerTop = vh / 2 - rect.height / 2;
+    const start = centerTriggerTop;
+    const end = vh * 0.4 - rect.height;
     const total = start - end;
     const scrolled = start - rect.top;
     const progress = total > 0 ? Math.min(1, Math.max(0, scrolled / total)) : 0;
@@ -226,6 +230,7 @@
   // seamlessly wherever the card actually is on screen, so no fragile frozen-snapshot
   // alignment is needed.
   const darkCard = document.getElementById('dark-card');
+  const infoGrid = document.querySelector('.cs-info-grid');
   const darkCardSpacer = document.querySelector('.cs-dark-card-spacer');
   const darkCardOverlay = document.getElementById('dark-card-overlay');
   const darkCardOverlayTagline = darkCardOverlay ? darkCardOverlay.querySelector('.cs-dark-card-overlay__tagline') : null;
@@ -237,15 +242,34 @@
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const spacerRect = darkCardSpacer.getBoundingClientRect();
+    const cardRect = darkCard.getBoundingClientRect();
+    // The dark card is a normal grid item stretched (align-items:stretch) to match
+    // its much taller sibling column, so it is itself far taller than the
+    // viewport — "the card's own center" is not a usable settle marker (it would
+    // require most of the card to already be scrolled off top). What actually
+    // needs to be seen at rest is the .cs-info-grid section itself, so gate on
+    // that section's own live position instead; fall back to the card if the
+    // grid element isn't found for some reason.
+    const gridRect = infoGrid ? infoGrid.getBoundingClientRect() : cardRect;
 
-    // Same start/end windowing technique as updateCollageScroll: progress rises as the
-    // spacer approaches from below and reaches 1 well before it scrolls fully past,
-    // leaving most of the spacer's height as a "hold" at fullscreen+tagline.
-    const start = spacerRect.height + vh * 0.15;
-    const end = vh * 0.4;
-    const total = start - end;
-    const scrolled = start - spacerRect.top;
-    const rawProgress = total > 0 ? Math.min(1, Math.max(0, scrolled / total)) : 0;
+    // Phase A (settle-in): the old trigger keyed entirely off the spacer's raw
+    // distance from a fixed offset (spacerRect.height, ~160vh) — that threshold
+    // was reached while the .cs-info-grid section was still well below the
+    // viewport, so growth started before the user had seen the resting 3-column
+    // grid at all. Instead, only start counting scroll distance once the grid
+    // section's top has scrolled up to the top of the viewport, i.e. once the
+    // grid is filling the screen at rest (all 3 columns, hover states working).
+    const scrolledPastSettle = Math.max(0, -gridRect.top);
+
+    // Hold distance: once settled, let the user keep scrolling normally for
+    // about a full viewport height with the grid still fully at rest before any
+    // growth begins — this is the "settle-in" window the user asked for.
+    const holdDistance = vh * 1.0;
+    // Phase B (grow): reuse the same smoothstep-eased 0->1 growth curve as
+    // before, now driven by continued scrolling past the hold window rather
+    // than by the spacer's absolute position.
+    const growDistance = vh * 0.6;
+    const rawProgress = Math.min(1, Math.max(0, (scrolledPastSettle - holdDistance) / growDistance));
     const isActive = rawProgress > 0.001 && spacerRect.bottom > 0;
 
     darkCard.classList.toggle('is-eclipsed', isActive);
@@ -257,7 +281,6 @@
     }
 
     const eased = smoothstep(rawProgress);
-    const cardRect = darkCard.getBoundingClientRect();
 
     const left = lerp(cardRect.left, 0, eased);
     const top = lerp(cardRect.top, 0, eased);

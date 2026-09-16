@@ -208,7 +208,11 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
 }
 .cs-dark-card-spacer{height:0;}
 @media (prefers-reduced-motion:no-preference){
-  .cs-dark-card-spacer{height:160vh;}
+  /* 240vh: ~1vh settle-in hold (grid at rest, see js/main.js updateDarkCardScroll)
+     + ~0.6vh smooth grow + a real fullscreen hold afterward before this scroll
+     budget runs out. Bumped from 160vh because the settle-in hold now eats into
+     what used to be pure growth/hold distance. */
+  .cs-dark-card-spacer{height:240vh;}
 }
 .cs-dark-card-overlay{position:fixed;z-index:30;overflow:clip;background:var(--cs-dark-card);
   pointer-events:none;opacity:0;transition:opacity .12s linear;
