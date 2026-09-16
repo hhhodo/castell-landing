@@ -65,7 +65,7 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
 /* 유일한 버튼: 문의하기 — solid style */
 .cs-btn{position:absolute;right:0;display:inline-flex;align-items:center;justify-content:center;
   height:48px;padding-inline:var(--space-6);border-radius:var(--radius-sm);background:var(--cs-white);color:var(--cs-dark);
-  font-weight:var(--cs-fw-base);font-size:var(--fs-body-1);line-height:var(--lh-body);
+  font-weight:var(--cs-fw-strong);font-size:var(--fs-body-1);line-height:var(--lh-body);
   letter-spacing:var(--tracking-kr);transition:opacity .15s ease;}
 .cs-btn:hover{opacity:.85;}
 
@@ -87,7 +87,7 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
 .cs-statement__head{display:flex;flex-direction:column;align-items:center;gap:var(--space-6);
   text-align:center;color:var(--cs-white);}
 .cs-statement__head h2{font-weight:var(--cs-fw-strong);letter-spacing:var(--tracking-kr);
-  font-size:var(--fs-h1);line-height:var(--lh-h1);}
+  font-size:var(--fs-display-sm);line-height:var(--lh-h1);}
 .cs-statement__head p{font-weight:var(--cs-fw-base);letter-spacing:var(--tracking-kr);
   font-size:var(--cs-fs-section-sub);line-height:var(--lh-body);}
 .cs-statement__articles{display:flex;flex-direction:column;width:100%;align-items:center;padding-top:var(--space-11);}
@@ -115,14 +115,6 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
 .cs-article__figure{position:relative;flex:1 1 420px;max-width:1100px;aspect-ratio:978/599;
   border-radius:var(--radius-sm);overflow:clip;background:var(--cs-placeholder);}
 .cs-article__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
-/* Edge gradient so the card blends continuously into the section's dark background
-   instead of sitting as a hard-edged rectangle — soft fade to var(--cs-dark) on all
-   four edges, layered above the photo and below the dim overlay + caption content. */
-.cs-article__figure::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
-  background:
-    linear-gradient(to right, var(--cs-dark), transparent 18%, transparent 82%, var(--cs-dark)),
-    linear-gradient(to bottom, var(--cs-dark), transparent 18%, transparent 82%, var(--cs-dark));
-  background-blend-mode:screen;}
 .cs-article__figcaption{position:absolute;inset:0;z-index:2;background:var(--cs-overlay-20);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-7);}
 .cs-article__figcaption h3{color:var(--cs-white);font-weight:var(--cs-fw-base);text-align:center;letter-spacing:var(--tracking-kr);
@@ -130,7 +122,8 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
 .cs-article__pills{display:flex;flex-wrap:wrap;gap:var(--space-1);align-items:center;justify-content:center;}
 .cs-pill--outline-sm{border:var(--border-1);border-color:var(--cs-pill-border);border-radius:var(--radius-circle);
   padding:var(--space-4) var(--space-6);color:var(--cs-white);font-size:var(--fs-body-1);line-height:var(--lh-body);
-  font-weight:var(--cs-fw-base);letter-spacing:var(--tracking-kr);white-space:nowrap;}
+  font-weight:var(--cs-fw-strong);letter-spacing:var(--tracking-kr);white-space:nowrap;
+  background:rgba(255,255,255,.14);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
 .cs-article__copy{flex:1 1 320px;color:var(--cs-white);font-weight:var(--cs-fw-base);letter-spacing:var(--tracking-kr);
   font-size:var(--fs-h2);line-height:var(--lh-h2);}
 /* Caption opacity is driven per-scroll-frame by JS (see updateStatementScroll) so only
@@ -174,8 +167,10 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
 .cs-info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-5);
   padding-top:var(--space-10);}
 .cs-info-col{display:flex;flex-direction:column;gap:var(--space-3);}
-.cs-card{background:var(--cs-card-bg);border:var(--border-1);border-color:var(--cs-card-border);border-radius:var(--radius-sm);
-  padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-6);}
+.cs-card{background:var(--cs-white);border:var(--border-1);border-color:var(--color-primary-100);border-radius:var(--radius-sm);
+  padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-6);
+  transition:background-color .2s ease,border-color .2s ease;}
+.cs-card:hover{background:var(--cs-card-bg);border-color:var(--cs-card-border);}
 .cs-card h3{font-weight:var(--cs-fw-base);color:var(--cs-text);letter-spacing:var(--tracking-kr);
   font-size:var(--fs-body-1);line-height:var(--lh-body);text-transform:uppercase;}
 .cs-stat-card .cs-stat-number{font-weight:var(--cs-fw-base);color:var(--cs-text);letter-spacing:var(--tracking-kr);
@@ -192,8 +187,10 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
 .cs-dark-card::before{content:"";position:absolute;inset:0;z-index:1;background:var(--cs-overlay-20);pointer-events:none;}
 .cs-dark-card span{position:relative;z-index:2;color:var(--cs-white);font-weight:var(--cs-fw-strong);letter-spacing:var(--tracking-kr);
   font-size:var(--fs-h2);line-height:var(--lh-h2);}
-.cs-link-card{background:var(--cs-card-bg);border:var(--border-1);border-color:var(--cs-card-border);border-radius:var(--radius-sm);
-  padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-6);position:relative;flex:1;}
+.cs-link-card{background:var(--cs-white);border:var(--border-1);border-color:var(--color-primary-100);border-radius:var(--radius-sm);
+  padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-6);position:relative;flex:1;
+  transition:background-color .2s ease,border-color .2s ease;}
+.cs-link-card:hover{background:var(--cs-card-bg);border-color:var(--cs-card-border);}
 .cs-link-card h3{font-weight:var(--cs-fw-base);color:var(--cs-text);letter-spacing:var(--tracking-kr);
   font-size:var(--fs-body-1);line-height:var(--lh-body);}
 .cs-link-card p{color:var(--cs-text-faint);font-weight:var(--cs-fw-base);letter-spacing:var(--tracking-kr);
@@ -205,16 +202,16 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
 .cs-esg__inner{width:100%;padding-bottom:var(--space-10);
   display:flex;flex-direction:column;gap:var(--space-6);}
 .cs-esg__head{display:flex;flex-direction:column;gap:var(--space-6);}
-.cs-eyebrow{font-weight:var(--cs-fw-base);color:var(--cs-text);letter-spacing:var(--tracking-kr);
+.cs-eyebrow{font-weight:var(--cs-fw-strong);color:var(--cs-text);letter-spacing:var(--tracking-kr);
   font-size:var(--fs-body-1);line-height:var(--lh-body);}
 .cs-section-h{font-weight:var(--cs-fw-strong);color:var(--cs-text);letter-spacing:var(--tracking-kr);
-  font-size:var(--fs-h1);line-height:var(--lh-h1);}
+  font-size:var(--fs-display-sm);line-height:var(--lh-h1);}
 /* Direct child of .cs-esg (not .cs-esg__inner) so align-items:center on the section
    centers this row wider than its sibling — symmetric overflow left/right, matching
    the reference's centered-but-wider collage row. Column proportions (450/568px,
    scaled 1.25x from the original 360/454px reference to match the 1800px container)
    are kept as fixed px; only radius/gap/spacing are tokenized. */
-.cs-collage{display:flex;gap:var(--space-4);width:100%;max-width:2468px;margin-inline:auto;}
+.cs-collage{display:flex;align-items:center;gap:var(--space-4);width:100%;max-width:2468px;margin-inline:auto;}
 .cs-collage__col{display:flex;flex-direction:column;gap:var(--space-4);
   flex-shrink:0;flex:1 1 450px;max-width:450px;}
 .cs-collage__col .cs-collage__item{border-radius:var(--radius-sm);background:var(--cs-placeholder);

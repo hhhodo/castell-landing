@@ -102,14 +102,31 @@
     ? Array.from(collageSection.querySelectorAll('.cs-collage__item'))
     : [];
 
-  // Group size = how much of the 0..1 progress range one reveal "step" takes;
-  // items sharing the same --i (center-outward index) share a step so they
-  // still stagger center → out, just continuously rather than time-based.
-  const collageMaxStep = collageItems.reduce(
-    (max, el) => Math.max(max, Number(el.style.getPropertyValue('--i')) || 0),
-    0
-  );
-  const collageStepSize = 1 / (collageMaxStep + 2); // +1 for last step, +1 headroom so it settles before section end
+  // Reveal sequencing: the center item (--i:0) gets its own dedicated early
+  // phase of the scroll range — only it is visible/settling while every
+  // other item stays fully hidden. Only after the center item has fully
+  // arrived (plus a short hold) does progress start unlocking the next
+  // steps outward (--i:1, then --i:2, ...), each still grouped/staggered by
+  // --i as before, just sequenced into distinct non-overlapping windows
+  // instead of all steps starting to reveal from scroll-start.
+  const collageSteps = Array.from(
+    new Set(collageItems.map((el) => Number(el.style.getPropertyValue('--i')) || 0))
+  ).sort((a, b) => a - b);
+
+  const CENTER_WIDTH = 0.32; // portion of progress devoted solely to the center item settling
+  const HOLD_WIDTH = 0.08;   // pause after the center settles, before outward reveal begins
+  const outerStepsCount = Math.max(1, collageSteps.length - 1);
+  const outerWidth = (1 - CENTER_WIDTH - HOLD_WIDTH) / outerStepsCount;
+
+  const collageStepRanges = new Map();
+  collageSteps.forEach((step, idx) => {
+    if (idx === 0) {
+      collageStepRanges.set(step, [0, CENTER_WIDTH]);
+    } else {
+      const start = CENTER_WIDTH + HOLD_WIDTH + (idx - 1) * outerWidth;
+      collageStepRanges.set(step, [start, start + outerWidth]);
+    }
+  });
 
   const updateCollageScroll = () => {
     if (!collageSection || !collageItems.length) return;
@@ -132,9 +149,11 @@
 
     collageItems.forEach((el) => {
       const step = Number(el.style.getPropertyValue('--i')) || 0;
-      const threshold = step * collageStepSize;
-      // How far past this item's own threshold we are, normalized to one step's width.
-      const local = Math.min(1, Math.max(0, (progress - threshold) / collageStepSize));
+      const [rangeStart, rangeEnd] = collageStepRanges.get(step) || [0, 1];
+      // How far through this item's own window we are — items outside their
+      // window (progress hasn't reached rangeStart yet) stay at local 0, i.e.
+      // fully hidden, regardless of how far along later steps' windows are.
+      const local = Math.min(1, Math.max(0, (progress - rangeStart) / (rangeEnd - rangeStart)));
       const eased = local * local * (3 - 2 * local); // smoothstep for a smoother arrival
       el.style.opacity = String(eased);
       const translateY = 28 * (1 - eased);
