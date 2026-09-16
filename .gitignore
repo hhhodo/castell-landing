@@ -1,0 +1,7 @@
+.DS_Store
+assets/**/.DS_Store
+
+# Raw source video drops (700MB/176MB) — GitHub hard-blocks pushes >100MB.
+# Compressed derivatives (hero.mp4, solution.mp4) are committed instead.
+assets/images/hero.mov
+assets/images/K0106318-Robot_arm_holding_supercomputer_CPU.mov
