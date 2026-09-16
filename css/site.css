@@ -92,7 +92,16 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
   font-size:var(--cs-fs-section-sub);line-height:var(--lh-body);}
 .cs-statement__articles{display:flex;flex-direction:column;width:100%;align-items:center;padding-top:var(--space-11);}
 .cs-statement__list{display:flex;flex-direction:column;gap:var(--space-10);width:100%;}
-.cs-article{display:flex;gap:var(--space-10);align-items:center;flex-wrap:wrap;}
+/* .cs-article carries the container/container--cs treatment (width:100%, max-width 1800px,
+   centering, gutter padding) itself rather than .cs-statement__list, because .cs-article is
+   position:absolute;inset:0 inside the pinned .cs-statement__list (see media query below) —
+   an absolutely positioned box's containing block is its ancestor's PADDING box, so inset:0
+   sits flush with the outer edge of any padding .cs-statement__list carries and the gutter
+   is silently ignored. Applying the same width/max-width/margin/padding here instead means
+   the gutter is real padding inside .cs-article's own box, which .cs-article__copy (a normal
+   flex child, not absolutely positioned) correctly respects at every viewport width. */
+.cs-article{display:flex;gap:var(--space-10);align-items:center;flex-wrap:wrap;
+  width:100%;max-width:var(--cs-container);margin-inline:auto;padding-inline:var(--gutter);}
 
 /* Scroll-driven pinned stacking transition (matches GigaVis reference node 184:1172/1173/1190/1205:
    3 Article blocks stacked at identical coordinates). Track is 300vh = 3 states x 100vh;
