@@ -46,20 +46,63 @@
   }, { threshold: 0.2 });
   revealEls.forEach((el) => io.observe(el));
 
-  // ESG collage: one-time scroll-triggered fly-in-from-center reveal, same
-  // IntersectionObserver + class-toggle technique as [data-reveal] above.
-  // Reduced-motion users get the CSS fallback (no opacity/transform change,
-  // so the plain images just show — see the (no-preference) media rule in site.css).
-  const collageEls = document.querySelectorAll('[data-collage-reveal]');
-  const collageIo = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-        collageIo.unobserve(entry.target);
-      }
+  // ESG collage: continuously scroll-linked fly-in, same scroll-progress
+  // technique as the statement crossfade / wordmark fill above (progress
+  // computed from the section's own getBoundingClientRect() each scroll tick,
+  // no artificial tall sticky track needed — the collage's natural height is
+  // the scroll range). Each item has its own reveal threshold along that
+  // 0–1 progress (center item first, then next-out, then outermost) and its
+  // opacity/transform is driven by how far progress has passed that
+  // threshold, so items keep animating in as the user keeps scrolling
+  // instead of all firing at once off a single trigger.
+  const collageSection = document.querySelector('[data-collage-reveal]');
+  const collageItems = collageSection
+    ? Array.from(collageSection.querySelectorAll('.cs-collage__item'))
+    : [];
+
+  // Group size = how much of the 0..1 progress range one reveal "step" takes;
+  // items sharing the same --i (center-outward index) share a step so they
+  // still stagger center → out, just continuously rather than time-based.
+  const collageMaxStep = collageItems.reduce(
+    (max, el) => Math.max(max, Number(el.style.getPropertyValue('--i')) || 0),
+    0
+  );
+  const collageStepSize = 1 / (collageMaxStep + 2); // +1 for last step, +1 headroom so it settles before section end
+
+  const updateCollageScroll = () => {
+    if (!collageSection || !collageItems.length) return;
+    if (reduceMotionMq.matches) {
+      collageItems.forEach((el) => {
+        el.style.opacity = '';
+        el.style.transform = '';
+      });
+      return;
+    }
+    const rect = collageSection.getBoundingClientRect();
+    const vh = window.innerHeight;
+    // Scroll range: from the moment the section's bottom enters the viewport
+    // to the moment its bottom reaches the top (i.e. as it scrolls fully past).
+    const start = rect.height + vh * 0.15;
+    const end = vh * 0.4;
+    const total = start - end;
+    const scrolled = start - rect.top;
+    const progress = total > 0 ? Math.min(1, Math.max(0, scrolled / total)) : 0;
+
+    collageItems.forEach((el) => {
+      const step = Number(el.style.getPropertyValue('--i')) || 0;
+      const threshold = step * collageStepSize;
+      // How far past this item's own threshold we are, normalized to one step's width.
+      const local = Math.min(1, Math.max(0, (progress - threshold) / collageStepSize));
+      const eased = local * local * (3 - 2 * local); // smoothstep for a smoother arrival
+      el.style.opacity = String(eased);
+      const translateY = 28 * (1 - eased);
+      const scale = 0.94 + 0.06 * eased;
+      el.style.transform = `translateY(${translateY}px) scale(${scale})`;
     });
-  }, { threshold: 0.2 });
-  collageEls.forEach((el) => collageIo.observe(el));
+  };
+  updateCollageScroll();
+  window.addEventListener('scroll', updateCollageScroll, { passive: true });
+  window.addEventListener('resize', updateCollageScroll);
 
   // Wordmark: wrap every character in its own <span class="cs-char"> at load time,
   // then fill them in one at a time based on scroll progress through the taller
