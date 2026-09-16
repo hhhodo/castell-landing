@@ -276,9 +276,9 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
   .cs-collage-track{height:180vh;}
   .cs-collage{position:sticky;top:0;}
 }
-.cs-collage{display:flex;align-items:center;gap:var(--space-4);width:100%;max-width:2468px;margin-inline:auto;}
+.cs-collage{display:flex;align-items:center;gap:var(--space-4);width:2468px;flex-shrink:0;}
 .cs-collage__col{display:flex;flex-direction:column;gap:var(--space-4);
-  flex-shrink:0;flex:1 1 450px;max-width:450px;}
+  flex:0 0 450px;max-width:450px;}
 .cs-collage__col .cs-collage__item{border-radius:var(--radius-sm);background:var(--cs-placeholder);
   width:100%;height:auto;display:block;object-fit:cover;color:var(--cs-text-faint);
   font-size:var(--fs-body-1);font-weight:var(--cs-fw-base);line-height:var(--lh-body);}
