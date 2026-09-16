@@ -153,7 +153,7 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
 }
 .cs-wordmark{display:flex;flex-direction:column;align-items:center;justify-content:center;
   text-align:center;min-height:100vh;}
-.cs-wordmark p{color:var(--cs-blue-accent);font-weight:var(--cs-fw-strong);text-transform:uppercase;
+.cs-wordmark p{color:var(--cs-text);font-weight:var(--cs-fw-strong);text-transform:uppercase;
   letter-spacing:var(--display-tracking);font-size:var(--fs-display-lg);line-height:var(--lh-display);}
 /* Per-character scroll fill: JS wraps each character in .cs-char and toggles
    .is-filled based on scroll progress through .cs-wordmark-track (same
