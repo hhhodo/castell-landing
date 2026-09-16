@@ -34,9 +34,20 @@
   /* ---- CASTELL-specific font-size overrides (explicit px from spec, no matching token) ---- */
   --cs-fs-hero-sub:28px;
   --cs-fs-section-sub:24px;
+
+  /* ---- CASTELL-specific container override: user wants 1800px, wider than the shared
+     kit's fixed --container-default(1440)/--container-wide(1600). Same precedent as the
+     font-size overrides above — a deliberate one-off outside the shared token scale.
+     Every section that previously used .container or .container--wide now uses
+     .container--cs so they share one 1800px width. ---- */
+  --cs-container:1800px;
 }
 
 body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
+
+/* CASTELL-only container width (1800px) — replaces .container/.container--wide as the
+   content wrapper for every section listed in index.html's Layout Declaration. */
+.container--cs{max-width:var(--cs-container);}
 
 /* ---------- nav ---------- */
 .cs-nav{position:fixed;top:0;left:0;width:100%;z-index:20;
@@ -95,7 +106,7 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
   .cs-statement__list{position:sticky;top:0;height:100vh;gap:0;justify-content:center;overflow:clip;}
   .cs-article{position:absolute;inset:0;margin:auto;height:fit-content;max-height:100%;opacity:0;will-change:opacity;}
 }
-.cs-article__figure{position:relative;flex:1 1 420px;max-width:978px;aspect-ratio:978/599;
+.cs-article__figure{position:relative;flex:1 1 420px;max-width:1100px;aspect-ratio:978/599;
   border-radius:var(--radius-sm);overflow:clip;background:var(--cs-placeholder);}
 .cs-article__figure .cs-placeholder-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
   color:var(--cs-text-faint);font-size:var(--fs-body-1);font-weight:var(--cs-fw-base);line-height:var(--lh-body);}
@@ -143,7 +154,7 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
   color:var(--cs-text);font-weight:var(--cs-fw-strong);letter-spacing:var(--tracking-kr);
   font-size:var(--fs-body-1);line-height:var(--lh-body);}
 .cs-dark-card{background:var(--cs-dark-card);border-radius:var(--radius-sm);overflow:clip;position:relative;
-  min-height:353px;display:flex;align-items:flex-end;padding:var(--space-6);}
+  min-height:441px;display:flex;align-items:flex-end;padding:var(--space-6);}
 .cs-dark-card::before{content:"";position:absolute;inset:0;background:var(--cs-placeholder);opacity:.14;}
 .cs-dark-card span{position:relative;z-index:1;color:var(--cs-white);font-weight:var(--cs-fw-strong);letter-spacing:var(--tracking-kr);
   font-size:var(--fs-h2);line-height:var(--lh-h2);}
@@ -166,15 +177,16 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
   font-size:var(--fs-h1);line-height:var(--lh-h1);}
 /* Direct child of .cs-esg (not .cs-esg__inner) so align-items:center on the section
    centers this row wider than its sibling — symmetric overflow left/right, matching
-   the reference's centered-but-wider collage row. Column proportions (360/454px)
-   are kept as fixed px per the reference; only radius/gap/spacing are tokenized. */
-.cs-collage{display:flex;gap:var(--space-4);width:100%;max-width:1974px;}
+   the reference's centered-but-wider collage row. Column proportions (450/568px,
+   scaled 1.25x from the original 360/454px reference to match the 1800px container)
+   are kept as fixed px; only radius/gap/spacing are tokenized. */
+.cs-collage{display:flex;gap:var(--space-4);width:100%;max-width:2468px;}
 .cs-collage__col{display:flex;flex-direction:column;gap:var(--space-4);
-  flex-shrink:0;flex:1 1 360px;max-width:360px;}
+  flex-shrink:0;flex:1 1 450px;max-width:450px;}
 .cs-collage__col .cs-collage__item{border-radius:var(--radius-sm);background:var(--cs-placeholder);
   width:100%;height:auto;display:flex;align-items:center;justify-content:center;color:var(--cs-text-faint);
   font-size:var(--fs-body-1);font-weight:var(--cs-fw-base);line-height:var(--lh-body);}
-.cs-collage__col--wide{flex-basis:454px;max-width:454px;}
+.cs-collage__col--wide{flex-basis:568px;max-width:568px;}
 
 /* ---------- NEWS / 뉴스룸 ---------- */
 .cs-news{background:var(--cs-white);display:flex;flex-direction:column;align-items:center;
@@ -186,10 +198,10 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
 .cs-more{display:flex;align-items:center;gap:var(--space-1);color:var(--cs-text);font-weight:var(--cs-fw-strong);
   font-size:var(--fs-body-1);line-height:var(--lh-body);padding-top:var(--space-4);letter-spacing:var(--tracking-kr);}
 .cs-notice-box{border:var(--border-1);border-color:var(--cs-news-border);border-radius:var(--radius-sm);
-  padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-4);max-width:696px;width:100%;margin-top:var(--space-8);}
+  padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-4);max-width:870px;width:100%;margin-top:var(--space-8);}
 .cs-notice-item{display:flex;gap:var(--space-2);align-items:center;flex-wrap:wrap;}
 .cs-notice-item .cat{font-weight:var(--cs-fw-strong);color:var(--cs-text);letter-spacing:var(--tracking-kr);
-  font-size:var(--fs-body-1);line-height:var(--lh-body);flex-shrink:0;width:80px;}
+  font-size:var(--fs-body-1);line-height:var(--lh-body);flex-shrink:0;width:100px;}
 .cs-notice-item .title{font-weight:var(--cs-fw-base);color:var(--cs-text);letter-spacing:var(--tracking-kr);
   font-size:var(--fs-body-1);line-height:var(--lh-body);flex:1;}
 .cs-notice-item .date{color:var(--cs-text-faint-2);font-weight:var(--cs-fw-base);letter-spacing:var(--tracking-kr);
@@ -216,7 +228,7 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
   display:flex;flex-direction:column;}
 .cs-footer>.container{display:flex;flex-direction:column;gap:var(--space-8);}
 .cs-footer__grid{display:grid;grid-template-columns:1fr;gap:var(--space-6);width:100%;}
-@media (min-width:900px){.cs-footer__grid{grid-template-columns:114px 1fr 126px;}}
+@media (min-width:900px){.cs-footer__grid{grid-template-columns:143px 1fr 158px;}}
 .cs-footer__nav{display:flex;flex-direction:column;gap:var(--space-3);}
 .cs-footer__nav a{color:var(--cs-white);font-weight:var(--cs-fw-strong);letter-spacing:var(--tracking-kr);
   font-size:var(--fs-body-1);line-height:var(--lh-body);}

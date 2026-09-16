@@ -28,13 +28,18 @@ spacing=space-8~13
 -->
 <!--
 Layout Declaration (source: GigaVis Figma node 184:520, fileKey BrVaTxFSnaAlv6IT2ZRvhs):
-Hero      — full-bleed — 8-4
-Statement — wide        — 7-5
+Container width override: all non-full-bleed sections use .container--cs (1800px, see
+css/site.css --cs-container) instead of the shared kit's --container-default(1440px)/
+--container-wide(1600px) — a deliberate CASTELL-only override, same precedent as the
+80/28/56/24 font-size overrides. Internal grid/collage/card widths were rescaled
+proportionally to the new 1800px width (see per-section comments in css/site.css).
+Hero      — full-bleed — 8-4   (inner copy: container--cs, was wide/1600px)
+Statement — container--cs (was wide/1600px) — 7-5
 Solution  — full-bleed
-Global    — default      — 4-4-4
-ESG       — default      — 4-8
-News      — default      — 5-7
-Footer    — default      — 4-4-4
+Global    — container--cs (was default/1440px) — 4-4-4
+ESG       — container--cs (was default/1440px) — 4-8
+News      — container--cs (was default/1440px) — 5-7
+Footer    — container--cs (was default/1440px) — 4-4-4
 -->
 
 <nav class="cs-nav" id="nav">
@@ -54,7 +59,7 @@ Footer    — default      — 4-4-4
 <section class="cs-hero">
   <div class="cs-hero__media" aria-hidden="true">이미지 준비중 (1920×1080)</div>
   <div class="cs-hero__content">
-    <div class="cs-hero__copy container container--wide" data-reveal>
+    <div class="cs-hero__copy container container--cs" data-reveal>
       <h1>보이지 않는 결함까지, 완벽을 검사하다</h1>
       <p>CASTELL은 광학·비전·자동화 기술을 결합한 정밀 검사·수리 솔루션으로 반도체와 첨단 제조 현장의 품질 기준을 세워갑니다.</p>
     </div>
@@ -63,12 +68,12 @@ Footer    — default      — 4-4-4
 
 <!-- Statement — Beyond Inspection, Toward Perfection -->
 <section class="cs-statement" id="solution">
-  <div class="cs-statement__head container container--wide" data-reveal>
+  <div class="cs-statement__head container container--cs" data-reveal>
     <h2>정밀을 넘어,<br>완벽을 향하여</h2>
     <p>세계가 인정한 기술력으로 첨단 제조 산업의 기준을 만들어갑니다</p>
   </div>
   <div class="cs-statement__articles">
-    <div class="cs-statement__list container container--wide">
+    <div class="cs-statement__list container container--cs">
       <article class="cs-article" data-reveal>
         <div class="cs-article__figure">
           <div class="cs-placeholder-label">이미지 준비중 (978×599)</div>
@@ -127,7 +132,7 @@ Footer    — default      — 4-4-4
 
 <!-- 글로벌 워드마크 + 정보 카드 -->
 <section class="cs-global" id="global">
-  <div class="cs-global__inner container">
+  <div class="cs-global__inner container container--cs">
     <div class="cs-wordmark" data-reveal>
       <p>ANNOUNCING THE<br>BRAND VALUE OF<br>CASTELL'S GLOBAL<br>No.1 to the world</p>
     </div>
@@ -172,7 +177,7 @@ Footer    — default      — 4-4-4
 
 <!-- ESG / 지속가능경영 -->
 <section class="cs-esg" id="esg">
-  <div class="cs-esg__inner container">
+  <div class="cs-esg__inner container container--cs">
     <div class="cs-esg__head" data-reveal>
       <p class="cs-eyebrow">지속가능경영</p>
       <p class="cs-section-h">환경과 사회 그리고 기업의 가치를 함께 고려하는<br>지속가능경영 전략을 실천합니다</p>
@@ -201,7 +206,7 @@ Footer    — default      — 4-4-4
 
 <!-- NEWS / 뉴스룸 -->
 <section class="cs-news" id="news">
-  <div class="cs-news__inner container">
+  <div class="cs-news__inner container container--cs">
     <div class="cs-news__top">
       <div class="cs-news__intro" data-reveal>
         <p class="cs-eyebrow">뉴스룸</p>
@@ -261,7 +266,7 @@ Footer    — default      — 4-4-4
 
 <!-- Footer -->
 <footer class="cs-footer" id="contact">
-  <div class="container">
+  <div class="container container--cs">
   <div class="cs-footer__grid">
     <nav class="cs-footer__nav">
       <a href="#">개인정보 처리방침</a>
