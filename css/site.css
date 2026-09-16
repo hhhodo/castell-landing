@@ -80,11 +80,17 @@ body{background:var(--cs-white);}
 .container--cs{width:100%;max-width:var(--cs-container-wordmark);margin-inline:auto;padding-inline:clamp(20px,2.6vw,50px);}
 
 /* ---------- nav ---------- */
+/* Default (top of page, over the dark hero image): solid scrim so nav is readable
+   against a bright hero photo. As soon as the user scrolls (.is-scrolled), the header
+   goes transparent per explicit request — text stays white with a text-shadow so it
+   remains legible once the page's white sections scroll underneath it. */
 .cs-nav{position:fixed;top:0;left:0;width:100%;z-index:20;
   display:flex;align-items:center;justify-content:center;
   padding:0 clamp(20px,8.3vw,160px);height:clamp(56px,3.8vw,73px);
-  color:var(--cs-white);transition:background .2s ease;}
-.cs-nav.is-scrolled{background:rgba(4,6,14,.92);backdrop-filter:blur(6px);}
+  background:rgba(4,6,14,.92);backdrop-filter:blur(6px);
+  color:var(--cs-white);text-shadow:0 1px 6px rgba(0,0,0,.35);
+  transition:background .2s ease,backdrop-filter .2s ease;}
+.cs-nav.is-scrolled{background:transparent;backdrop-filter:none;}
 .cs-nav__inner{width:100%;max-width:var(--cs-nav-width);height:100%;display:flex;align-items:center;justify-content:center;position:relative;}
 .cs-nav__mark{position:absolute;left:0;font-weight:var(--fw-strong);font-size:20px;letter-spacing:var(--cs-tracking);color:var(--cs-white);}
 .cs-nav__list{display:flex;align-items:center;height:100%;}
@@ -196,7 +202,11 @@ body{background:var(--cs-white);}
 .cs-link-card .cs-chevron{position:absolute;right:39.936px;bottom:39.936px;}
 
 /* ---------- ESG / 지속가능경영 ---------- */
-.cs-esg{background:var(--cs-white);display:flex;flex-direction:column;align-items:center;}
+/* Section itself clips (like .cs-statement / .cs-solution) so the collage row below,
+   which is intentionally wider than --cs-container-wordmark (1974px vs 1421.72px per
+   reference node 184:1465), can bleed symmetrically without ever creating a page-level
+   horizontal scrollbar. */
+.cs-esg{background:var(--cs-white);display:flex;flex-direction:column;align-items:center;overflow:clip;}
 .cs-esg__inner{width:100%;max-width:var(--cs-container-wordmark);padding-bottom:clamp(60px,6.25vw,119.808px);
   display:flex;flex-direction:column;gap:clamp(24px,2.08vw,39.936px);}
 .cs-esg__head{display:flex;flex-direction:column;gap:clamp(20px,2.08vw,39.936px);}
@@ -204,12 +214,19 @@ body{background:var(--cs-white);}
   font-size:var(--cs-fs-eyebrow);line-height:var(--cs-lh-eyebrow);}
 .cs-section-h{font-weight:600;color:var(--cs-text);letter-spacing:var(--cs-tracking);
   font-size:clamp(24px,2.29vw,var(--cs-fs-section-h));line-height:1.2;}
-.cs-collage{display:flex;gap:var(--cs-gap-collage);width:100%;overflow-x:auto;padding-bottom:4px;}
-.cs-collage__col{display:flex;flex-direction:column;gap:var(--cs-gap-collage);flex-shrink:0;width:360px;}
+/* Direct child of .cs-esg (not .cs-esg__inner) so align-items:center on the section
+   centers this row the same way Figma's "Container:margin" centers a child wider than
+   its sibling — symmetric overflow left/right, exactly like the reference's x=-276.14px
+   offset inside its 1421.72px-wide parent. All widths/gaps scale together via the same
+   px÷19.2=vw fluid ratio used across this file, so the 360/454px column proportions
+   never distort relative to each other at any viewport width. */
+.cs-collage{display:flex;gap:clamp(10px,1.0417vw,var(--cs-gap-collage));
+  width:clamp(280px,102.8125vw,1974px);}
+.cs-collage__col{display:flex;flex-direction:column;gap:clamp(10px,1.0417vw,var(--cs-gap-collage));
+  flex-shrink:0;width:clamp(160px,18.75vw,360px);}
 .cs-collage__col .cs-collage__item{border-radius:var(--cs-radius-collage);background:var(--cs-placeholder);
-  width:100%;display:flex;align-items:center;justify-content:center;color:var(--cs-text-faint);font-size:var(--fs-badge);}
-.cs-collage__col--wide{width:454px;}
-.cs-collage__col--wide .cs-collage__item{height:700px;}
+  width:100%;height:auto;display:flex;align-items:center;justify-content:center;color:var(--cs-text-faint);font-size:var(--fs-badge);}
+.cs-collage__col--wide{width:clamp(200px,23.6458vw,454px);}
 
 /* ---------- NEWS / 뉴스룸 ---------- */
 .cs-news{background:var(--cs-white);display:flex;flex-direction:column;align-items:center;}
@@ -267,4 +284,6 @@ body{background:var(--cs-white);}
   .cs-article{flex-direction:column;}
   .cs-info-grid{grid-template-columns:1fr;}
   .cs-news__top{flex-direction:column;}
+  .cs-collage{flex-wrap:wrap;width:100%;}
+  .cs-collage__col,.cs-collage__col--wide{width:100%;}
 }
