@@ -185,8 +185,47 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
   min-height:441px;display:flex;align-items:flex-end;padding:var(--space-6);}
 .cs-dark-card__img{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;}
 .cs-dark-card::before{content:"";position:absolute;inset:0;z-index:1;background:var(--cs-overlay-20);pointer-events:none;}
-.cs-dark-card span{position:relative;z-index:2;color:var(--cs-white);font-weight:var(--cs-fw-strong);letter-spacing:var(--tracking-kr);
+.cs-dark-card__text{position:relative;z-index:2;display:flex;flex-direction:column;gap:var(--space-3);}
+.cs-dark-card__label{color:var(--cs-white);font-weight:var(--cs-fw-strong);letter-spacing:var(--tracking-kr);
   font-size:var(--fs-h2);line-height:var(--lh-h2);}
+.cs-dark-card__tagline-static{display:none;}
+/* Reduced-motion fallback: no scale/zoom track, just the resting card with the
+   original label plus the new tagline shown as a small caption underneath. */
+@media (prefers-reduced-motion:reduce){
+  .cs-dark-card__tagline-static{display:block;color:var(--cs-white);font-weight:var(--cs-fw-base);
+    letter-spacing:var(--tracking-kr);font-size:var(--fs-body-1);line-height:var(--lh-body);opacity:.85;}
+}
+/* Scroll-driven scale-to-fullscreen: the in-grid card fades out (is-eclipsed) once the
+   effect activates and a position:fixed overlay clone (below) takes over, interpolating
+   real box geometry from the card's live getBoundingClientRect() to the full viewport.
+   Kept as a normal grid item at its normal size throughout — unlike the wordmark/statement
+   tracks, this effect deliberately does NOT add height to a grid item (that would stretch
+   the whole 3-column row via grid's default align-items:stretch); the extra scroll length
+   instead comes from .cs-dark-card-spacer, a plain sibling block after .cs-info-grid. */
+@media (prefers-reduced-motion:no-preference){
+  .cs-dark-card{transition:opacity .15s ease;}
+  .cs-dark-card.is-eclipsed{opacity:0;}
+}
+.cs-dark-card-spacer{height:0;}
+@media (prefers-reduced-motion:no-preference){
+  .cs-dark-card-spacer{height:160vh;}
+}
+.cs-dark-card-overlay{position:fixed;z-index:30;overflow:clip;background:var(--cs-dark-card);
+  pointer-events:none;opacity:0;transition:opacity .12s linear;
+  display:flex;align-items:flex-end;padding:var(--space-6);}
+.cs-dark-card-overlay.is-active{opacity:1;}
+.cs-dark-card-overlay__img{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;}
+.cs-dark-card-overlay::before{content:"";position:absolute;inset:0;z-index:1;background:var(--cs-overlay-20);}
+.cs-dark-card-overlay__label{position:relative;z-index:2;color:var(--cs-white);font-weight:var(--cs-fw-strong);
+  letter-spacing:var(--tracking-kr);font-size:var(--fs-h2);line-height:var(--lh-h2);}
+.cs-dark-card-overlay__tagline{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;
+  text-align:center;padding-inline:var(--space-8);margin:0;color:var(--cs-white);font-weight:var(--cs-fw-strong);
+  letter-spacing:var(--tracking-kr);font-size:var(--fs-display-sm);line-height:var(--lh-h1);
+  opacity:0;transform:translateY(24px);transition:opacity .25s ease,transform .25s ease;}
+.cs-dark-card-overlay__tagline.is-visible{opacity:1;transform:translateY(0);}
+@media (prefers-reduced-motion:reduce){
+  .cs-dark-card-overlay{display:none;}
+}
 .cs-link-card{background:var(--cs-white);border:var(--border-1);border-color:var(--color-primary-100);border-radius:var(--radius-sm);
   padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-6);position:relative;flex:1;
   transition:background-color .2s ease,border-color .2s ease;}

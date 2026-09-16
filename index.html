@@ -154,7 +154,14 @@ Footer    — container--cs (was default/1440px) — 4-4-4
           </nav>
         </div>
       </div>
-      <div class="cs-dark-card"><img src="assets/images/no1-dark.jpg" alt="" loading="lazy" class="cs-dark-card__img"><span>No.1<br>to the world</span></div>
+      <div class="cs-dark-card" id="dark-card">
+        <img src="assets/images/no1-dark.jpg" alt="" loading="lazy" class="cs-dark-card__img">
+        <div class="cs-dark-card__text">
+          <span class="cs-dark-card__label">No.1<br>to the world</span>
+          <p class="cs-dark-card__tagline-static">정밀함이 만든 격차, 세계가 인정한 1위</p>
+        </div>
+      </div>
+      <div class="cs-dark-card-spacer" aria-hidden="true"></div>
       <div class="cs-info-col">
         <a href="#contact" class="cs-link-card">
           <h3>IR 문의</h3>
@@ -170,6 +177,15 @@ Footer    — container--cs (was default/1440px) — 4-4-4
         </a>
       </div>
     </div>
+  </div>
+  <!-- Scroll-driven scale-to-fullscreen overlay clone of .cs-dark-card (see js/main.js
+       updateDarkCardScroll). Interpolates real fixed-position box geometry from the
+       live in-grid card's getBoundingClientRect() to full-viewport dimensions, so the
+       grid's own row sizing is never touched by this effect. -->
+  <div class="cs-dark-card-overlay" id="dark-card-overlay" aria-hidden="true">
+    <img src="assets/images/no1-dark.jpg" alt="" class="cs-dark-card-overlay__img">
+    <span class="cs-dark-card-overlay__label">No.1<br>to the world</span>
+    <p class="cs-dark-card-overlay__tagline">정밀함이 만든 격차,<br>세계가 인정한 1위</p>
   </div>
 </section>
 

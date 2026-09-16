@@ -211,4 +211,71 @@
   updateWordmarkScroll();
   window.addEventListener('scroll', updateWordmarkScroll, { passive: true });
   window.addEventListener('resize', updateWordmarkScroll);
+
+  // "No.1 to the world" dark card: scroll-driven scale-to-fullscreen. Unlike the
+  // wordmark/statement tracks, this card stays a normal-sized grid item at all times
+  // (giving it 200vh+ of height would stretch the whole 3-column grid row via
+  // align-items:stretch). Instead, .cs-dark-card-spacer is a plain sibling block after
+  // .cs-info-grid that exists purely to supply extra scroll distance, and progress is
+  // computed from its position the same way .cs-collage computes fly-in progress from
+  // its own section rect (start/end window, no artificial sticky pin needed).
+  // A position:fixed overlay clone is then interpolated every tick from the *live*
+  // getBoundingClientRect() of the real in-grid card to the full viewport box — using
+  // real width/height/top/left rather than transform:scale avoids all transform-origin
+  // math, and re-reading the card's live rect each frame means the overlay always starts
+  // seamlessly wherever the card actually is on screen, so no fragile frozen-snapshot
+  // alignment is needed.
+  const darkCard = document.getElementById('dark-card');
+  const darkCardSpacer = document.querySelector('.cs-dark-card-spacer');
+  const darkCardOverlay = document.getElementById('dark-card-overlay');
+  const darkCardOverlayTagline = darkCardOverlay ? darkCardOverlay.querySelector('.cs-dark-card-overlay__tagline') : null;
+  const darkCardRadius = darkCard ? parseFloat(getComputedStyle(darkCard).borderRadius) || 0 : 0;
+  const lerp = (a, b, t) => a + (b - a) * t;
+
+  const updateDarkCardScroll = () => {
+    if (!darkCard || !darkCardSpacer || !darkCardOverlay || reduceMotionMq.matches) return;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const spacerRect = darkCardSpacer.getBoundingClientRect();
+
+    // Same start/end windowing technique as updateCollageScroll: progress rises as the
+    // spacer approaches from below and reaches 1 well before it scrolls fully past,
+    // leaving most of the spacer's height as a "hold" at fullscreen+tagline.
+    const start = spacerRect.height + vh * 0.15;
+    const end = vh * 0.4;
+    const total = start - end;
+    const scrolled = start - spacerRect.top;
+    const rawProgress = total > 0 ? Math.min(1, Math.max(0, scrolled / total)) : 0;
+    const isActive = rawProgress > 0.001 && spacerRect.bottom > 0;
+
+    darkCard.classList.toggle('is-eclipsed', isActive);
+    darkCardOverlay.classList.toggle('is-active', isActive);
+
+    if (!isActive) {
+      if (darkCardOverlayTagline) darkCardOverlayTagline.classList.remove('is-visible');
+      return;
+    }
+
+    const eased = smoothstep(rawProgress);
+    const cardRect = darkCard.getBoundingClientRect();
+
+    const left = lerp(cardRect.left, 0, eased);
+    const top = lerp(cardRect.top, 0, eased);
+    const width = lerp(cardRect.width, vw, eased);
+    const height = lerp(cardRect.height, vh, eased);
+    const radius = lerp(darkCardRadius, 0, eased);
+
+    darkCardOverlay.style.left = `${left}px`;
+    darkCardOverlay.style.top = `${top}px`;
+    darkCardOverlay.style.width = `${width}px`;
+    darkCardOverlay.style.height = `${height}px`;
+    darkCardOverlay.style.borderRadius = `${radius}px`;
+
+    if (darkCardOverlayTagline) {
+      darkCardOverlayTagline.classList.toggle('is-visible', rawProgress > 0.78);
+    }
+  };
+  updateDarkCardScroll();
+  window.addEventListener('scroll', updateDarkCardScroll, { passive: true });
+  window.addEventListener('resize', updateDarkCardScroll);
 })();
