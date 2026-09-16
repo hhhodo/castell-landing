@@ -45,4 +45,66 @@
     });
   }, { threshold: 0.2 });
   revealEls.forEach((el) => io.observe(el));
+
+  // ESG collage: one-time scroll-triggered fly-in-from-center reveal, same
+  // IntersectionObserver + class-toggle technique as [data-reveal] above.
+  // Reduced-motion users get the CSS fallback (no opacity/transform change,
+  // so the plain images just show — see the (no-preference) media rule in site.css).
+  const collageEls = document.querySelectorAll('[data-collage-reveal]');
+  const collageIo = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        collageIo.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+  collageEls.forEach((el) => collageIo.observe(el));
+
+  // Wordmark: wrap every character in its own <span class="cs-char"> at load time,
+  // then fill them in one at a time based on scroll progress through the taller
+  // .cs-wordmark-track (same scroll-progress computation as the statement crossfade
+  // above), pinned via position:sticky in CSS. Reduced-motion users see the CSS
+  // fallback of all characters fully colored immediately (no track height, no JS work needed).
+  const wordmarkTrack = document.querySelector('.cs-wordmark-track');
+  const wordmarkPs = document.querySelectorAll('.cs-wordmark p');
+
+  const wrapChars = (root) => {
+    const walker = (node) => {
+      Array.from(node.childNodes).forEach((child) => {
+        if (child.nodeType === Node.TEXT_NODE) {
+          const frag = document.createDocumentFragment();
+          Array.from(child.textContent).forEach((ch) => {
+            const span = document.createElement('span');
+            span.className = 'cs-char';
+            span.textContent = ch;
+            frag.appendChild(span);
+          });
+          child.replaceWith(frag);
+        } else if (child.nodeType === Node.ELEMENT_NODE && child.tagName !== 'BR') {
+          walker(child);
+        }
+      });
+    };
+    walker(root);
+  };
+  if (!reduceMotionMq.matches) {
+    wordmarkPs.forEach((p) => wrapChars(p));
+  }
+  const wordmarkChars = document.querySelectorAll('.cs-wordmark .cs-char');
+
+  const updateWordmarkScroll = () => {
+    if (!wordmarkTrack || !wordmarkChars.length || reduceMotionMq.matches) return;
+    const rect = wordmarkTrack.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const scrollable = rect.height - vh;
+    const progress = scrollable > 0 ? Math.min(1, Math.max(0, -rect.top / scrollable)) : 0;
+    const filledCount = Math.floor(progress * wordmarkChars.length);
+    wordmarkChars.forEach((el, i) => {
+      el.classList.toggle('is-filled', i < filledCount);
+    });
+  };
+  updateWordmarkScroll();
+  window.addEventListener('scroll', updateWordmarkScroll, { passive: true });
+  window.addEventListener('resize', updateWordmarkScroll);
 })();

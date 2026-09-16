@@ -18,7 +18,6 @@
   --cs-text-faint-2:#8a8c8e;
   --cs-text-faint-3:#a1a3a5;
   --cs-divider:#e8e8e8;
-  --cs-news-border:#d0d1d2;
   --cs-white:#ffffff;
   --cs-overlay-20:rgba(0,0,0,.2);
   --cs-overlay-15:rgba(0,0,0,.15);
@@ -134,9 +133,23 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
 /* ---------- 글로벌 워드마크 + 정보 카드 ---------- */
 .cs-global{background:var(--cs-white);display:flex;flex-direction:column;align-items:center;}
 .cs-global__inner{width:100%;padding-block:var(--space-12);}
-.cs-wordmark{display:flex;flex-direction:column;align-items:center;text-align:center;}
+.cs-wordmark-track{position:relative;width:100%;}
+@media (prefers-reduced-motion:no-preference){
+  .cs-wordmark-track{height:250vh;}
+  .cs-wordmark{position:sticky;top:0;}
+}
+.cs-wordmark{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;min-height:100vh;}
 .cs-wordmark p{color:var(--cs-blue-accent);font-weight:var(--cs-fw-strong);text-transform:uppercase;
   letter-spacing:var(--display-tracking);font-size:var(--fs-display-lg);line-height:var(--lh-display);}
+/* Per-character scroll fill: JS wraps each character in .cs-char and toggles
+   .is-filled based on scroll progress through .cs-wordmark-track (same
+   scroll-progress technique as .cs-statement__articles above). */
+.cs-wordmark p .cs-char{opacity:.25;transition:opacity .15s linear;}
+.cs-wordmark p .cs-char.is-filled{opacity:1;}
+@media (prefers-reduced-motion:reduce){
+  .cs-wordmark p .cs-char{opacity:1;}
+}
 
 .cs-info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-5);
   padding-top:var(--space-10);}
@@ -180,7 +193,7 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
    the reference's centered-but-wider collage row. Column proportions (450/568px,
    scaled 1.25x from the original 360/454px reference to match the 1800px container)
    are kept as fixed px; only radius/gap/spacing are tokenized. */
-.cs-collage{display:flex;gap:var(--space-4);width:100%;max-width:2468px;}
+.cs-collage{display:flex;gap:var(--space-4);width:100%;max-width:2468px;margin-inline:auto;}
 .cs-collage__col{display:flex;flex-direction:column;gap:var(--space-4);
   flex-shrink:0;flex:1 1 450px;max-width:450px;}
 .cs-collage__col .cs-collage__item{border-radius:var(--radius-sm);background:var(--cs-placeholder);
@@ -188,24 +201,23 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
   font-size:var(--fs-body-1);font-weight:var(--cs-fw-base);line-height:var(--lh-body);}
 .cs-collage__col--wide{flex-basis:568px;max-width:568px;}
 
+/* Scroll-triggered fly-in-from-center reveal (JS toggles .is-in per item, staggered
+   center-outward via a --i custom property set in index.html). Mirrors the same
+   one-time IntersectionObserver + class-toggle technique as [data-reveal]. */
+@media (prefers-reduced-motion:no-preference){
+  .cs-collage__item{opacity:0;transform:translateY(28px) scale(.94);
+    transition:opacity .6s ease, transform .6s ease;
+    transition-delay:calc(var(--i, 0) * 90ms);}
+  .cs-collage.is-visible .cs-collage__item{opacity:1;transform:translateY(0) scale(1);}
+}
+
 /* ---------- NEWS / 뉴스룸 ---------- */
 .cs-news{background:var(--cs-white);display:flex;flex-direction:column;align-items:center;
   padding-block:var(--space-12);}
 .cs-news__inner{width:100%;
   display:flex;flex-direction:column;gap:var(--space-8);}
-.cs-news__top{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--space-5);flex-wrap:wrap;}
+.cs-news__top{display:flex;flex-direction:column;}
 .cs-news__intro{display:flex;flex-direction:column;gap:var(--space-6);}
-.cs-more{display:flex;align-items:center;gap:var(--space-1);color:var(--cs-text);font-weight:var(--cs-fw-strong);
-  font-size:var(--fs-body-1);line-height:var(--lh-body);padding-top:var(--space-4);letter-spacing:var(--tracking-kr);}
-.cs-notice-box{border:var(--border-1);border-color:var(--cs-news-border);border-radius:var(--radius-sm);
-  padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-4);max-width:870px;width:100%;margin-top:var(--space-8);}
-.cs-notice-item{display:flex;gap:var(--space-2);align-items:center;flex-wrap:wrap;}
-.cs-notice-item .cat{font-weight:var(--cs-fw-strong);color:var(--cs-text);letter-spacing:var(--tracking-kr);
-  font-size:var(--fs-body-1);line-height:var(--lh-body);flex-shrink:0;width:100px;}
-.cs-notice-item .title{font-weight:var(--cs-fw-base);color:var(--cs-text);letter-spacing:var(--tracking-kr);
-  font-size:var(--fs-body-1);line-height:var(--lh-body);flex:1;}
-.cs-notice-item .date{color:var(--cs-text-faint-2);font-weight:var(--cs-fw-base);letter-spacing:var(--tracking-kr);
-  font-size:var(--fs-body-1);line-height:var(--lh-body);flex-shrink:0;}
 .cs-news-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-5);width:100%;}
 @media (min-width:900px){.cs-news-grid{grid-template-columns:repeat(4,minmax(0,1fr));}}
 .cs-news-card{display:flex;flex-direction:column;}
