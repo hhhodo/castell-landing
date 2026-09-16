@@ -41,17 +41,17 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
   background:rgba(4,6,14,.92);backdrop-filter:blur(6px);
   color:var(--cs-white);
   transition:background .2s ease,backdrop-filter .2s ease;}
-.cs-nav.is-scrolled{background:transparent;backdrop-filter:none;color:var(--cs-white);}
+.cs-nav.is-scrolled{background:var(--cs-dark);backdrop-filter:none;color:var(--cs-white);}
 .cs-nav__inner{width:100%;max-width:var(--container-wide);height:100%;display:flex;align-items:center;justify-content:center;position:relative;}
 .cs-nav__mark{position:absolute;left:0;font-weight:var(--cs-fw-strong);font-size:var(--fs-h3);letter-spacing:var(--display-tracking);line-height:var(--lh-h3);color:var(--cs-white);}
 .cs-nav__list{display:flex;align-items:center;height:100%;}
 .cs-nav__list a{display:flex;align-items:center;height:100%;padding-inline:var(--space-5);
-  font-weight:var(--cs-fw-strong);font-size:var(--fs-body-1);line-height:var(--lh-body);
+  font-weight:var(--cs-fw-strong);font-size:var(--fs-h3);line-height:var(--lh-h3);
   letter-spacing:var(--tracking-kr);color:var(--cs-white);white-space:nowrap;}
 /* 유일한 버튼: 문의하기 — solid style */
 .cs-btn{position:absolute;right:0;display:inline-flex;align-items:center;justify-content:center;
   padding:var(--space-3) var(--space-6);border-radius:var(--radius-sm);background:var(--cs-white);color:var(--cs-dark);
-  font-weight:var(--cs-fw-strong);font-size:var(--fs-body-1);line-height:var(--lh-body);
+  font-weight:var(--cs-fw-strong);font-size:var(--fs-h3);line-height:var(--lh-h3);
   letter-spacing:var(--tracking-kr);transition:opacity .15s ease;}
 .cs-btn:hover{opacity:.85;}
 
@@ -66,9 +66,9 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
 .cs-hero__copy{width:100%;color:var(--cs-white);
   display:flex;flex-direction:column;gap:var(--space-4);}
 .cs-hero__copy h1{font-weight:var(--cs-fw-strong);letter-spacing:var(--tracking-kr);
-  font-size:var(--fs-h1);line-height:var(--lh-h1);}
+  font-size:var(--fs-display-md);line-height:var(--lh-display);}
 .cs-hero__copy p{font-weight:var(--cs-fw-base);letter-spacing:var(--tracking-kr);
-  font-size:var(--fs-body-1);line-height:var(--lh-body);max-width:52ch;}
+  font-size:var(--fs-h2);line-height:var(--lh-h2);max-width:52ch;}
 
 /* ---------- statement: Beyond Inspection, Toward Perfection ---------- */
 .cs-statement{background:var(--cs-dark);padding-block:var(--space-12);overflow:clip;}
