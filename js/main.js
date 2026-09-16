@@ -88,15 +88,16 @@
   }, { threshold: 0.2 });
   revealEls.forEach((el) => io.observe(el));
 
-  // ESG collage: continuously scroll-linked fly-in, same scroll-progress
-  // technique as the statement crossfade / wordmark fill above (progress
-  // computed from the section's own getBoundingClientRect() each scroll tick,
-  // no artificial tall sticky track needed — the collage's natural height is
-  // the scroll range). Each item has its own reveal threshold along that
-  // 0–1 progress (center item first, then next-out, then outermost) and its
-  // opacity/transform is driven by how far progress has passed that
-  // threshold, so items keep animating in as the user keeps scrolling
-  // instead of all firing at once off a single trigger.
+  // ESG collage: sticky-pin scroll track (same technique as the statement
+  // crossfade / wordmark fill above) — .cs-collage-track is a tall (180vh)
+  // wrapper and .cs-collage itself is position:sticky inside it, so the
+  // section holds still on screen for the track's scroll distance while
+  // progress goes 0->1, instead of the reveal racing past as the section
+  // simply scrolls through the viewport in normal flow. Each item still has
+  // its own reveal threshold along that 0–1 progress (center item first,
+  // then next-out, then outermost), staggered via --i as before; only the
+  // progress *input* changed, not the reveal/easing logic itself.
+  const collageTrack = document.querySelector('.cs-collage-track');
   const collageSection = document.querySelector('[data-collage-reveal]');
   const collageItems = collageSection
     ? Array.from(collageSection.querySelectorAll('.cs-collage__item'))
@@ -129,7 +130,7 @@
   });
 
   const updateCollageScroll = () => {
-    if (!collageSection || !collageItems.length) return;
+    if (!collageTrack || !collageSection || !collageItems.length) return;
     if (reduceMotionMq.matches) {
       collageItems.forEach((el) => {
         el.style.opacity = '';
@@ -137,19 +138,15 @@
       });
       return;
     }
-    const rect = collageSection.getBoundingClientRect();
+    // Progress driven by the track's own position, same technique as
+    // updateStatementScroll/updateWordmarkScroll: 0 until the track's sticky
+    // point is reached (so the reveal can't start early), 1 once the track's
+    // scroll distance is exhausted (so the pin releases with the reveal
+    // already fully resolved).
+    const rect = collageTrack.getBoundingClientRect();
     const vh = window.innerHeight;
-    // Scroll range: gated on the section's own live position rather than its raw
-    // height-based offset (the same early-trigger bug fixed on the dark card
-    // below) — start counting once the section has scrolled up to roughly the
-    // vertical center of the viewport, so the collage doesn't begin revealing
-    // while it's still below the fold.
-    const centerTriggerTop = vh / 2 - rect.height / 2;
-    const start = centerTriggerTop;
-    const end = vh * 0.4 - rect.height;
-    const total = start - end;
-    const scrolled = start - rect.top;
-    const progress = total > 0 ? Math.min(1, Math.max(0, scrolled / total)) : 0;
+    const scrollable = rect.height - vh;
+    const progress = scrollable > 0 ? Math.min(1, Math.max(0, -rect.top / scrollable)) : 0;
 
     collageItems.forEach((el) => {
       const step = Number(el.style.getPropertyValue('--i')) || 0;

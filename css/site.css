@@ -254,6 +254,19 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
    the reference's centered-but-wider collage row. Column proportions (450/568px,
    scaled 1.25x from the original 360/454px reference to match the 1800px container)
    are kept as fixed px; only radius/gap/spacing are tokenized. */
+/* Sticky-pin scroll track (same pattern as .cs-statement__articles /
+   .cs-wordmark-track): the section holds still on screen for the track's extra
+   scroll distance while the center-then-outward reveal plays out via JS-driven
+   progress (see updateCollageScroll), then releases to normal scroll once the
+   reveal has fully resolved. 180vh is sized so the stagger sequence (center
+   settle + hold + outward waves, see CENTER_WIDTH/HOLD_WIDTH/outerWidth in
+   js/main.js) comfortably finishes before the track's scroll range runs out,
+   without holding the page hostage for an obviously oversized pin. */
+.cs-collage-track{position:relative;width:100%;}
+@media (prefers-reduced-motion:no-preference){
+  .cs-collage-track{height:180vh;}
+  .cs-collage{position:sticky;top:0;}
+}
 .cs-collage{display:flex;align-items:center;gap:var(--space-4);width:100%;max-width:2468px;margin-inline:auto;}
 .cs-collage__col{display:flex;flex-direction:column;gap:var(--space-4);
   flex-shrink:0;flex:1 1 450px;max-width:450px;}
@@ -262,7 +275,7 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
   font-size:var(--fs-body-1);font-weight:var(--cs-fw-base);line-height:var(--lh-body);}
 .cs-collage__col--wide{flex-basis:568px;max-width:568px;}
 
-/* Continuously scroll-linked fly-in reveal: JS computes progress from the section's
+/* Continuously scroll-linked fly-in reveal: JS computes progress from the track's
    own getBoundingClientRect() on every scroll tick (same technique as the statement
    crossfade / wordmark fill) and writes opacity/transform inline per item, staggered
    center-outward via each item's --i custom property set in index.html. A short
