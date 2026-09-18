@@ -276,7 +276,7 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
    settle + hold + outward waves, see CENTER_WIDTH/HOLD_WIDTH/outerWidth in
    js/main.js) comfortably finishes before the track's scroll range runs out,
    without holding the page hostage for an obviously oversized pin. */
-.cs-collage-track{position:relative;width:100%;display:flex;justify-content:center;}
+.cs-collage-track{position:relative;width:100%;display:flex;justify-content:center;align-items:flex-start;}
 @media (prefers-reduced-motion:no-preference){
   .cs-collage-track{height:180vh;}
   .cs-collage{position:sticky;top:0;}
