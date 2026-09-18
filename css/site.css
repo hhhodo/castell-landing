@@ -128,19 +128,23 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-7);}
 .cs-article__figcaption h3{color:var(--cs-white);font-weight:var(--cs-fw-base);text-align:center;letter-spacing:var(--tracking-kr);
   font-size:var(--fs-h2);line-height:var(--lh-h2);}
-.cs-article__pills{display:flex;flex-wrap:wrap;gap:var(--space-1);align-items:center;justify-content:center;}
+/* .cs-article__text groups the caption paragraph and its pills into one column that
+   sits beside the image — pills used to live inside .cs-article__figcaption, overlaid
+   on the photo; moved out to sit below the caption text instead, outside the image. */
+.cs-article__text{flex:1 1 320px;display:flex;flex-direction:column;gap:var(--space-6);}
+.cs-article__pills{display:flex;flex-wrap:wrap;gap:var(--space-1);align-items:center;justify-content:flex-start;}
 .cs-pill--outline-sm{border:var(--border-1);border-color:var(--cs-pill-border);border-radius:var(--radius-circle);
   padding:var(--space-4) var(--space-6);color:var(--cs-white);font-size:var(--fs-body-1);line-height:var(--lh-body);
   font-weight:var(--cs-fw-strong);letter-spacing:var(--tracking-kr);white-space:nowrap;
   background:rgba(255,255,255,.14);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
-.cs-article__copy{flex:1 1 320px;color:var(--cs-white);font-weight:var(--cs-fw-base);letter-spacing:var(--tracking-kr);
+.cs-article__copy{color:var(--cs-white);font-weight:var(--cs-fw-base);letter-spacing:var(--tracking-kr);
   font-size:var(--fs-h2);line-height:var(--lh-h2);}
-/* Caption opacity is driven per-scroll-frame by JS (see updateStatementScroll) so only
-   the current front/transitioning article's text is visible — the image side hides via
-   the translateY stack instead, since an opaque photo naturally covers the one beneath,
-   but plain text has no background and would otherwise show through. */
+/* Caption+pills opacity is driven per-scroll-frame by JS (see updateStatementScroll) so
+   only the current front/transitioning article's text is visible — the image side hides
+   via the translateY stack instead, since an opaque photo naturally covers the one
+   beneath, but plain text has no background and would otherwise show through. */
 @media (prefers-reduced-motion:no-preference){
-  .cs-article__copy{will-change:opacity;}
+  .cs-article__text{will-change:opacity;}
 }
 
 /* ---------- full-bleed dark solution image + product lineup ---------- */
@@ -217,11 +221,12 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
 }
 .cs-dark-card-spacer{height:0;}
 @media (prefers-reduced-motion:no-preference){
-  /* 240vh: ~1vh settle-in hold (grid at rest, see js/main.js updateDarkCardScroll)
-     + ~0.6vh smooth grow + a real fullscreen hold afterward before this scroll
-     budget runs out. Bumped from 160vh because the settle-in hold now eats into
-     what used to be pure growth/hold distance. */
-  .cs-dark-card-spacer{height:240vh;}
+  /* updateDarkCardScroll's settle+hold+grow math is now keyed off the card's own
+     live height, and only needs roughly 0.5vh of scroll to finish growing to
+     fullscreen — 240vh left an enormous dead "stuck at fullscreen" hold (nearly
+     the whole spacer) before the next section could appear. 90vh gives a short,
+     comfortable read of the fullscreen tagline without an excessive scroll wait. */
+  .cs-dark-card-spacer{height:90vh;}
 }
 .cs-dark-card-overlay{position:fixed;z-index:30;overflow:clip;background:var(--cs-dark-card);
   pointer-events:none;opacity:0;transition:opacity .12s linear;

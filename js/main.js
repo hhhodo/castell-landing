@@ -41,7 +41,7 @@
     }
 
     statementArticles.forEach((el, i) => {
-      const copy = el.querySelector('.cs-article__copy');
+      const copy = el.querySelector('.cs-article__text');
       if (i === 0) {
         el.style.transform = 'translateY(0)';
       } else {
