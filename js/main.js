@@ -8,6 +8,26 @@
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
 
+  // Mobile nav: plain hamburger toggle (no library), matches the breakpoint
+  // css/site.css uses to switch .cs-nav__list into a fixed dropdown panel.
+  // Does not touch the existing scroll-transparency behavior above.
+  const navToggle = document.getElementById('nav-toggle');
+  const navList = document.getElementById('nav-list');
+  if (navToggle && navList) {
+    const closeMenu = () => {
+      navToggle.setAttribute('aria-expanded', 'false');
+      navList.classList.remove('is-open');
+    };
+    navToggle.addEventListener('click', () => {
+      const isOpen = navList.classList.toggle('is-open');
+      navToggle.setAttribute('aria-expanded', String(isOpen));
+    });
+    navList.querySelectorAll('a').forEach((a) => a.addEventListener('click', closeMenu));
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768) closeMenu();
+    });
+  }
+
   // Statement section: scroll-driven pinned stacking transition between the 3 article
   // states. Purely scroll-position-linked (no buttons/autoplay/carousel) — the track
   // container (.cs-statement__articles) is 300vh tall (3 states x 100vh) while
@@ -20,10 +40,17 @@
   const statementTrack = document.querySelector('.cs-statement__articles');
   const statementArticles = document.querySelectorAll('.cs-statement__articles .cs-article');
   const reduceMotionMq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  // Mobile viewports get the same plain-flow fallback as reduced-motion (see
+  // css/site.css's max-width:768px block, which matches this breakpoint
+  // exactly) — the pinned/scroll-linked effects below are 1920px-desktop-scale
+  // and are fragile/cramped at phone widths, so every effect's scroll handler
+  // below also bails out when mobileMq matches, same as reduceMotionMq.
+  const mobileMq = window.matchMedia('(max-width: 768px)');
+  const isDesktopMotion = () => !reduceMotionMq.matches && !mobileMq.matches;
   const smoothstep = (t) => t * t * (3 - 2 * t);
 
   const updateStatementScroll = () => {
-    if (!statementTrack || !statementArticles.length || reduceMotionMq.matches) return;
+    if (!statementTrack || !statementArticles.length || !isDesktopMotion()) return;
     const n = statementArticles.length;
     const rect = statementTrack.getBoundingClientRect();
     const vh = window.innerHeight;
@@ -131,7 +158,7 @@
 
   const updateCollageScroll = () => {
     if (!collageTrack || !collageSection || !collageItems.length) return;
-    if (reduceMotionMq.matches) {
+    if (!isDesktopMotion()) {
       collageItems.forEach((el) => {
         el.style.opacity = '';
         el.style.transform = '';
@@ -193,13 +220,13 @@
     };
     walker(root);
   };
-  if (!reduceMotionMq.matches) {
+  if (isDesktopMotion()) {
     wordmarkPs.forEach((p) => wrapChars(p));
   }
   const wordmarkChars = document.querySelectorAll('.cs-wordmark .cs-char');
 
   const updateWordmarkScroll = () => {
-    if (!wordmarkTrack || !wordmarkChars.length || reduceMotionMq.matches) return;
+    if (!wordmarkTrack || !wordmarkChars.length || !isDesktopMotion()) return;
     const rect = wordmarkTrack.getBoundingClientRect();
     const vh = window.innerHeight;
     const scrollable = rect.height - vh;
@@ -235,7 +262,7 @@
   const lerp = (a, b, t) => a + (b - a) * t;
 
   const updateDarkCardScroll = () => {
-    if (!darkCard || !darkCardSpacer || !darkCardOverlay || reduceMotionMq.matches) return;
+    if (!darkCard || !darkCardSpacer || !darkCardOverlay || !isDesktopMotion()) return;
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const spacerRect = darkCardSpacer.getBoundingClientRect();

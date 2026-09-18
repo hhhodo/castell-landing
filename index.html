@@ -45,12 +45,15 @@ Footer    — container--cs (was default/1440px) — 4-4-4
 <nav class="cs-nav" id="nav">
   <div class="cs-nav__inner">
     <span class="cs-nav__mark">CASTELL</span>
-    <ul class="cs-nav__list">
+    <ul class="cs-nav__list" id="nav-list">
       <li><a href="#solution">기술력</a></li>
       <li><a href="#global">기업정보</a></li>
       <li><a href="#esg">지속가능경영</a></li>
       <li><a href="#news">뉴스룸</a></li>
     </ul>
+    <button type="button" class="cs-nav__toggle" id="nav-toggle" aria-label="메뉴 열기" aria-expanded="false" aria-controls="nav-list">
+      <span></span><span></span><span></span>
+    </button>
     <a class="cs-btn" href="#contact">문의하기</a>
   </div>
 </nav>

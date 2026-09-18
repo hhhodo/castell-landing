@@ -68,6 +68,16 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
   font-weight:var(--cs-fw-strong);font-size:var(--fs-body-1);line-height:var(--lh-body);
   letter-spacing:var(--tracking-kr);transition:opacity .15s ease;}
 .cs-btn:hover{opacity:.85;}
+/* Mobile hamburger toggle — plain CSS + JS (see js/main.js), no library. Hidden by
+   default; the mobile media query below turns it on and swaps .cs-nav__list from an
+   inline row into a fixed dropdown panel it opens/closes. */
+.cs-nav__toggle{display:none;flex-direction:column;justify-content:center;gap:5px;
+  width:28px;height:28px;background:none;border:none;padding:0;cursor:pointer;color:inherit;}
+.cs-nav__toggle span{display:block;width:100%;height:2px;border-radius:1px;background:currentColor;
+  transition:transform .2s ease,opacity .2s ease;}
+.cs-nav__toggle[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.cs-nav__toggle[aria-expanded="true"] span:nth-child(2){opacity:0;}
+.cs-nav__toggle[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
 
 /* ---------- hero ---------- */
 .cs-hero{position:relative;width:100%;height:100vh;min-height:640px;overflow:clip;background:var(--cs-dark);}
@@ -344,10 +354,78 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
 .cs-footer__bottom p{color:var(--cs-white);font-weight:var(--cs-fw-base);letter-spacing:var(--tracking-kr);
   font-size:var(--fs-body-1);line-height:var(--lh-body);}
 
+/* =========================================================
+   Mobile (<=768px, same edge as the shared kit's token-scale breakpoint)
+   Several sections above are built around 1920px-desktop-scale pinned
+   scroll effects (position:sticky tracks driven by JS scroll math). At
+   mobile widths these are switched OFF and fall back to the same plain
+   stacked/static markup the prefers-reduced-motion:reduce rules already
+   establish for each effect — see js/main.js's mobileMq guards, which
+   mirror this breakpoint exactly so CSS and JS agree on when "mobile" begins.
+   ========================================================= */
 @media (max-width:768px){
-  .cs-article{flex-direction:column;}
+  /* ---- nav: collapse the 4 links behind a hamburger toggle; logo + 문의하기
+     stay visible at all times. Existing scroll-transparency (.is-scrolled)
+     is untouched — it still toggles background/color the same way. ---- */
+  .cs-nav__inner{justify-content:flex-start;}
+  .cs-nav__mark{position:static;}
+  .cs-nav__toggle{display:flex;margin-left:auto;}
+  .cs-btn{position:static;margin-left:var(--space-4);height:44px;padding-inline:var(--space-5);}
+  .cs-nav__list{position:fixed;top:70px;left:0;right:0;z-index:19;
+    flex-direction:column;align-items:stretch;height:auto;max-height:calc(100vh - 70px);
+    overflow-y:auto;background:var(--cs-white);box-shadow:0 12px 24px rgba(0,0,0,.12);
+    transform:translateY(-8px);opacity:0;pointer-events:none;
+    transition:opacity .2s ease,transform .2s ease;}
+  .cs-nav__list.is-open{transform:translateY(0);opacity:1;pointer-events:auto;}
+  .cs-nav__list a{height:auto;width:100%;padding:var(--space-4) var(--gutter);
+    color:var(--cs-text);font-size:var(--fs-body-1);}
+
+  /* ---- statement: drop the 300vh pinned stack, use the plain flow layout
+     (same fallback as prefers-reduced-motion:reduce) ---- */
+  .cs-statement__articles{position:static;height:auto;display:flex;padding-top:var(--space-9);}
+  .cs-statement__list{position:static;height:auto;gap:var(--space-9);overflow:visible;}
+  .cs-article{position:static;transform:none!important;max-height:none;height:auto;flex-direction:column;}
+  .cs-article__text{opacity:1!important;}
+
+  /* ---- wordmark: font-size already shrinks via --fs-display-lg (48px) from
+     styles.css's own mobile token scale; here we only drop the 250vh
+     letter-by-letter pinned track for a plain static heading, same as
+     prefers-reduced-motion:reduce. ---- */
+  .cs-wordmark-track{height:auto;}
+  .cs-wordmark{position:static;min-height:auto;padding-block:var(--space-8);}
+  .cs-wordmark p .cs-char{opacity:1!important;}
+
+  /* ---- solution caption: 80px hardcoded value overflows a 375-428px screen;
+     fall back to the token scale's h1 size (28px at this breakpoint). ---- */
+  .cs-solution__caption{font-size:var(--fs-h1);line-height:var(--lh-h1);}
+
+  /* ---- info-grid: single column (existing rule) + the No.1 card's
+     scroll-scale-to-fullscreen overlay disabled, same fallback as
+     prefers-reduced-motion:reduce (a fixed full-viewport clone that grows
+     off a getBoundingClientRect() interpolation is fragile at narrow,
+     address-bar-resizing mobile viewports, so it's turned off rather than
+     "fixed" — the resting card + static tagline read fine on their own). ---- */
   .cs-info-grid{grid-template-columns:1fr;}
+  .cs-dark-card-overlay{display:none;}
+  .cs-dark-card-spacer{height:0!important;}
+  .cs-dark-card{opacity:1!important;}
+  .cs-dark-card__tagline-static{display:block;color:var(--cs-white);font-weight:var(--cs-fw-base);
+    letter-spacing:var(--tracking-kr);font-size:var(--fs-body-1);line-height:var(--lh-body);opacity:.85;}
+
+  /* ---- ESG collage: the fixed 2468px bleed-and-pin row only works at
+     desktop scale. Fall back to a single stacked column (no horizontal
+     scroll, no sticky pin, no fixed width) with all items simply visible. ---- */
+  .cs-collage-track{height:auto;display:block;}
+  .cs-collage{position:static;height:auto;width:100%;flex-direction:column;flex-wrap:nowrap;
+    padding-block:var(--space-6);gap:var(--space-4);}
+  .cs-collage__col,.cs-collage__col--wide{flex-basis:auto;max-width:100%;}
+  .cs-collage__item{opacity:1!important;transform:none!important;}
+
+  /* ---- statement / news / footer misc column stacking ---- */
+  .cs-article{flex-direction:column;}
   .cs-news__top{flex-direction:column;}
-  .cs-collage{flex-wrap:wrap;}
-  .cs-collage__col,.cs-collage__col--wide{flex-basis:100%;max-width:100%;}
+}
+
+@media (max-width:480px){
+  .cs-news-grid{grid-template-columns:1fr;}
 }
