@@ -279,7 +279,7 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
 .cs-collage-track{position:relative;width:100%;display:flex;justify-content:center;align-items:flex-start;}
 @media (prefers-reduced-motion:no-preference){
   .cs-collage-track{height:180vh;}
-  .cs-collage{position:sticky;top:0;}
+  .cs-collage{position:sticky;top:0;height:100vh;}
 }
 .cs-collage{display:flex;align-items:center;gap:var(--space-4);width:2468px;flex-shrink:0;}
 .cs-collage__col{display:flex;flex-direction:column;gap:var(--space-4);
