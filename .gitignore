@@ -5,3 +5,13 @@ assets/**/.DS_Store
 # Compressed derivatives (hero.mp4, solution.mp4) are committed instead.
 assets/images/hero.mov
 assets/images/K0106318-Robot_arm_holding_supercomputer_CPU.mov
+
+# Raw high-res source photos (12-18MB each) dropped in for cropping — only the
+# small cropped/resized derivatives actually used in index.html (esg-*.jpg,
+# news-*.jpg, statement-*.jpg, no1-dark.jpg) are committed.
+assets/images/cb1700002144.jpg
+assets/images/cm08667334.jpg
+assets/images/pc0020348172.jpg
+assets/images/pc004305690.jpg
+assets/images/tc00580000007.jpg
+assets/images/td01830000510.jpg
