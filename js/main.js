@@ -274,18 +274,43 @@
     // fullscreen while the real card is still at least partially in view —
     // never starting from an already off-screen box.
     const growDistance = Math.max(vh * 0.35, visibleSpan * 0.5 + cardRect.height * 0.25);
-    const rawProgress = Math.min(1, Math.max(0, (scrolledPastSettle - holdDistance) / growDistance));
-    const isActive = rawProgress > 0.001 && spacerRect.bottom > 0;
+    const growProgress = Math.min(1, Math.max(0, (scrolledPastSettle - holdDistance) / growDistance));
+
+    // Once fully grown to fullscreen, this opaque fixed overlay (z-index 30) completely
+    // masks whatever is scrolling underneath it. The card's own rect is meaningless for
+    // timing a release once it's off-screen, so the "hold, then fade out" phase is instead
+    // driven by how far we've scrolled through .cs-dark-card-spacer itself — NOT by
+    // spacerRect.bottom>0 alone, which used to keep the overlay fully opaque (is-active,
+    // opacity:1 via a snappy .12s CSS transition) for nearly the entire spacer height.
+    // That meant the ESG heading below was silently scrolling into (and often most of the
+    // way THROUGH) its own natural reveal while completely hidden behind solid black —
+    // so the moment the mask finally lifted, the ESG section appeared to "teleport" in
+    // already mostly in place instead of arriving from below. Fixing this by fading the
+    // overlay's opacity out smoothly over a real portion of the spacer's own scroll range,
+    // well before the spacer (and the hidden content beneath) has finished scrolling.
+    const spacerTravelled = Math.max(0, -spacerRect.top);
+    const spacerFrac = spacerRect.height > 0 ? Math.min(1, spacerTravelled / spacerRect.height) : 0;
+    const releaseStart = 0.28;
+    const releaseEnd = 0.55;
+    const releaseProgress = spacerFrac <= releaseStart ? 0
+      : spacerFrac >= releaseEnd ? 1
+      : (spacerFrac - releaseStart) / (releaseEnd - releaseStart);
+    const overlayOpacity = growProgress * (1 - smoothstep(releaseProgress));
+    const isActive = overlayOpacity > 0.001 && spacerRect.bottom > 0;
 
     darkCard.classList.toggle('is-eclipsed', isActive);
-    darkCardOverlay.classList.toggle('is-active', isActive);
 
     if (!isActive) {
+      darkCardOverlay.classList.remove('is-active');
+      darkCardOverlay.style.opacity = '0';
       if (darkCardOverlayTagline) darkCardOverlayTagline.classList.remove('is-visible');
       return;
     }
 
-    const eased = smoothstep(rawProgress);
+    darkCardOverlay.classList.add('is-active');
+    darkCardOverlay.style.opacity = String(overlayOpacity);
+
+    const eased = smoothstep(growProgress);
 
     const left = lerp(cardRect.left, 0, eased);
     const top = lerp(cardRect.top, 0, eased);
@@ -300,7 +325,7 @@
     darkCardOverlay.style.borderRadius = `${radius}px`;
 
     if (darkCardOverlayTagline) {
-      darkCardOverlayTagline.classList.toggle('is-visible', rawProgress > 0.78);
+      darkCardOverlayTagline.classList.toggle('is-visible', growProgress > 0.78 && releaseProgress < 0.5);
     }
   };
   updateDarkCardScroll();
