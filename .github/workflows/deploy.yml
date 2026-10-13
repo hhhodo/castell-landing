@@ -27,10 +27,30 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Prepare Pages artifact
+        run: |
+          mkdir -p _site
+          rsync -a \
+            --exclude='/.git/' \
+            --exclude='/.github/' \
+            --exclude='/_site/' \
+            --exclude='/assets/images/*.mov' \
+            --exclude='/assets/images/cm08197124.jpg' \
+            --exclude='/assets/images/cb1700002144.jpg' \
+            --exclude='/assets/images/pc0020348172.jpg' \
+            --exclude='/assets/images/tc00580000007.jpg' \
+            --exclude='/assets/images/tc01500001755.jpg' \
+            --exclude='/assets/images/tc02730001568.jpg' \
+            --exclude='/assets/images/td0141t003961.jpg' \
+            --exclude='/assets/images/td01830000510.jpg' \
+            --exclude='/assets/images/twi001t3276183.jpg' \
+            --exclude='/assets/images/twi001t3465024.jpg' \
+            ./ _site/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: '_site'
 
       - name: Deploy to GitHub Pages
         id: deployment

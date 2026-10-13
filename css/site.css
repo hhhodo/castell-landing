@@ -62,12 +62,6 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
 .cs-nav__list a{display:flex;align-items:center;height:100%;padding-inline:var(--space-5);
   font-weight:var(--cs-fw-base);font-size:var(--fs-body-1);line-height:var(--lh-body);
   letter-spacing:var(--tracking-kr);color:inherit;white-space:nowrap;}
-/* 유일한 버튼: 문의하기 — solid style */
-.cs-btn{position:absolute;right:0;display:inline-flex;align-items:center;justify-content:center;
-  height:48px;padding-inline:var(--space-6);border-radius:var(--radius-sm);background:var(--cs-white);color:var(--cs-dark);
-  font-weight:var(--cs-fw-strong);font-size:var(--fs-body-1);line-height:var(--lh-body);
-  letter-spacing:var(--tracking-kr);transition:opacity .15s ease;}
-.cs-btn:hover{opacity:.85;}
 /* Mobile hamburger toggle — plain CSS + JS (see js/main.js), no library. Hidden by
    default; the mobile media query below turns it on and swaps .cs-nav__list from an
    inline row into a fixed dropdown panel it opens/closes. */
@@ -134,10 +128,10 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
 .cs-article__figure{position:relative;flex:1 1 420px;max-width:1100px;aspect-ratio:978/599;
   border-radius:var(--radius-sm);overflow:clip;background:var(--cs-placeholder);}
 .cs-article__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
-.cs-article__figcaption{position:absolute;inset:0;z-index:2;background:var(--cs-overlay-20);
+.cs-article__figcaption{position:absolute;inset:0;z-index:2;background:rgba(0,0,0,.42);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-7);}
-.cs-article__figcaption h3{color:var(--cs-white);font-weight:var(--cs-fw-base);text-align:center;letter-spacing:var(--tracking-kr);
-  font-size:var(--fs-h2);line-height:var(--lh-h2);}
+.cs-article__figcaption h3{color:var(--cs-white);font-weight:var(--cs-fw-strong);text-align:center;letter-spacing:var(--tracking-kr);
+  font-size:var(--fs-h2);line-height:var(--lh-h2);text-shadow:0 2px 12px rgba(0,0,0,.45);}
 /* .cs-article__text groups the caption paragraph and its pills into one column that
    sits beside the image — pills used to live inside .cs-article__figcaption, overlaid
    on the photo; moved out to sit below the caption text instead, outside the image. */
@@ -177,7 +171,7 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
 .cs-wordmark{display:flex;flex-direction:column;align-items:center;justify-content:center;
   text-align:center;min-height:100vh;}
 .cs-wordmark p{color:var(--cs-text);font-weight:var(--cs-fw-strong);text-transform:uppercase;
-  letter-spacing:var(--display-tracking);font-size:var(--fs-display-lg);line-height:var(--lh-display);}
+  letter-spacing:var(--display-tracking);font-size:64px;line-height:var(--lh-display);white-space:nowrap;}
 /* Per-character scroll fill: JS wraps each character in .cs-char and toggles
    .is-filled based on scroll progress through .cs-wordmark-track (same
    scroll-progress technique as .cs-statement__articles above). */
@@ -261,18 +255,18 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
 .cs-link-card h3{font-weight:var(--cs-fw-base);color:var(--cs-text);letter-spacing:var(--tracking-kr);
   font-size:var(--fs-body-1);line-height:var(--lh-body);}
 .cs-link-card p{color:var(--cs-text-faint);font-weight:var(--cs-fw-base);letter-spacing:var(--tracking-kr);
-  font-size:var(--fs-body-1);line-height:var(--lh-body);}
+  font-size:var(--fs-body-1);line-height:var(--lh-body);word-break:keep-all;}
 
 /* ---------- ESG / 지속가능경영 ---------- */
 .cs-esg{background:var(--cs-white);display:flex;flex-direction:column;align-items:center;overflow:clip;
-  padding-block:var(--space-12);}
-.cs-esg__inner{width:100%;padding-bottom:var(--space-10);
+  padding-block:var(--space-10);}
+.cs-esg__inner{width:100%;padding-bottom:var(--space-5);
   display:flex;flex-direction:column;gap:var(--space-6);}
-.cs-esg__head{display:flex;flex-direction:column;gap:var(--space-6);}
+.cs-esg__head,.cs-news__intro{display:flex;flex-direction:column;gap:var(--space-5);}
 .cs-eyebrow{font-weight:var(--cs-fw-strong);color:var(--cs-text);letter-spacing:var(--tracking-kr);
   font-size:var(--fs-body-1);line-height:var(--lh-body);}
 .cs-section-h{font-weight:var(--cs-fw-strong);color:var(--cs-text);letter-spacing:var(--tracking-kr);
-  font-size:var(--fs-display-sm);line-height:var(--lh-h1);}
+  font-size:var(--fs-h1);line-height:var(--lh-h1);word-break:keep-all;}
 /* Direct child of .cs-esg (not .cs-esg__inner) so align-items:center on the section
    centers this row wider than its sibling — symmetric overflow left/right, matching
    the reference's centered-but-wider collage row. Column proportions (450/568px,
@@ -317,7 +311,7 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
 .cs-news__inner{width:100%;
   display:flex;flex-direction:column;gap:var(--space-8);}
 .cs-news__top{display:flex;flex-direction:column;}
-.cs-news__intro{display:flex;flex-direction:column;gap:var(--space-6);}
+.cs-news__intro{display:flex;flex-direction:column;}
 .cs-news-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-5);width:100%;}
 @media (min-width:900px){.cs-news-grid{grid-template-columns:repeat(4,minmax(0,1fr));}}
 .cs-news-card{display:flex;flex-direction:column;}
@@ -360,13 +354,13 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
    mirror this breakpoint exactly so CSS and JS agree on when "mobile" begins.
    ========================================================= */
 @media (max-width:768px){
-  /* ---- nav: collapse the 4 links behind a hamburger toggle; logo + 문의하기
-     stay visible at all times. Existing scroll-transparency (.is-scrolled)
+    /* ---- nav: collapse the 4 links behind a hamburger toggle; the logo stays
+      visible at all times. Existing scroll-transparency (.is-scrolled)
      is untouched — it still toggles background/color the same way. ---- */
   .cs-nav__inner{justify-content:flex-start;}
   .cs-nav__mark{position:static;}
+  .cs-nav.is-scrolled{background:rgba(255,255,255,.92);color:var(--cs-text);backdrop-filter:blur(12px);}
   .cs-nav__toggle{display:flex;margin-left:auto;}
-  .cs-btn{position:static;margin-left:var(--space-4);height:44px;padding-inline:var(--space-5);}
   .cs-nav__list{position:fixed;top:70px;left:0;right:0;z-index:19;
     flex-direction:column;align-items:stretch;height:auto;max-height:calc(100vh - 70px);
     overflow-y:auto;background:var(--cs-white);box-shadow:0 12px 24px rgba(0,0,0,.12);
@@ -380,15 +374,15 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
      (same fallback as prefers-reduced-motion:reduce) ---- */
   .cs-statement__articles{position:static;height:auto;display:flex;padding-top:var(--space-9);}
   .cs-statement__list{position:static;height:auto;gap:var(--space-9);overflow:visible;}
-  .cs-article{position:static;transform:none!important;max-height:none;height:auto;flex-direction:column;}
+  .cs-article{position:static;transform:none!important;max-height:none;height:auto;flex-direction:column;flex-wrap:nowrap;}
+  .cs-article__figure,.cs-article__text{flex:0 1 auto;width:100%;min-width:0;}
   .cs-article__text{opacity:1!important;}
 
-  /* ---- wordmark: font-size already shrinks via --fs-display-lg (48px) from
-     styles.css's own mobile token scale; here we only drop the 250vh
-     letter-by-letter pinned track for a plain static heading, same as
-     prefers-reduced-motion:reduce. ---- */
+    /* ---- wordmark: use a fixed mobile size and drop the pinned track. ---- */
   .cs-wordmark-track{height:auto;}
-  .cs-wordmark{position:static;min-height:auto;padding-block:var(--space-8);}
+  .cs-wordmark{position:static;min-height:auto;width:calc(100% + var(--gutter)*2);
+    margin-inline:calc(var(--gutter)*-1);padding-block:var(--space-8);}
+  .cs-wordmark p{font-size:32px;}
   .cs-wordmark p .cs-char{opacity:1!important;}
 
   /* ---- solution caption: 80px hardcoded value overflows a 375-428px screen;
@@ -406,22 +400,44 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
   .cs-dark-card-spacer{height:0!important;}
   .cs-dark-card{opacity:1!important;}
   .cs-dark-card__tagline-static{display:block;color:var(--cs-white);font-weight:var(--cs-fw-base);
-    letter-spacing:var(--tracking-kr);font-size:var(--fs-body-1);line-height:var(--lh-body);opacity:.85;}
+    letter-spacing:var(--tracking-kr);font-size:var(--fs-body-1);line-height:var(--lh-body);opacity:.85;word-break:keep-all;}
 
   /* ---- ESG collage: the fixed 2468px bleed-and-pin row only works at
      desktop scale. Fall back to a single stacked column (no horizontal
      scroll, no sticky pin, no fixed width) with all items simply visible. ---- */
   .cs-collage-track{height:auto;display:block;}
-  .cs-collage{position:static;height:auto;width:100%;flex-direction:column;flex-wrap:nowrap;
-    padding-block:var(--space-6);gap:var(--space-4);}
-  .cs-collage__col,.cs-collage__col--wide{flex-basis:auto;max-width:100%;}
-  .cs-collage__item{opacity:1!important;transform:none!important;}
+  .cs-collage{position:static;height:auto;width:100%;display:block;column-count:2;column-gap:var(--space-3);
+    padding-block:var(--space-4);padding-inline:var(--gutter);}
+  .cs-collage__col,.cs-collage__col--wide{display:contents;}
+  .cs-collage__item{opacity:1!important;transform:none!important;break-inside:avoid;margin-block-end:var(--space-3);}
 
   /* ---- statement / news / footer misc column stacking ---- */
-  .cs-article{flex-direction:column;}
   .cs-news__top{flex-direction:column;}
+
+  /* Tighten the oversized desktop section rhythm while keeping generous breathing room. */
+  .cs-statement,.cs-global__inner,.cs-esg,.cs-news{padding-block:var(--space-8);}
+  .cs-statement__articles{padding-top:var(--space-7);}
+  .cs-statement__list{gap:var(--space-8);}
+  .cs-article{gap:var(--space-6);}
+  .cs-article__text{gap:var(--space-4);}
+  .cs-article__copy{font-size:var(--fs-h3);line-height:var(--lh-h3);}
+  .cs-pill--outline-sm{padding:var(--space-2) var(--space-4);font-size:var(--fs-body-2);}
+  .cs-hero{height:min(100svh,900px);min-height:560px;}
+  .cs-hero__content{bottom:var(--space-7);}
+  .cs-hero__copy p{font-size:var(--fs-body-1);line-height:var(--lh-body);}
+  .cs-solution__figure{min-height:260px;}
+  .cs-info-grid{padding-top:var(--space-7);}
+  .cs-esg__inner{padding-bottom:var(--space-6);}
+  .cs-esg__head,.cs-news__intro{gap:var(--space-4);}
+  .cs-section-h{font-size:var(--fs-h0);line-height:var(--lh-h0);}
+  .cs-news__inner{gap:var(--space-7);}
+  .cs-news-card__body{padding-block:var(--space-4);gap:var(--space-3);}
+  .cs-footer__address p{white-space:normal;overflow-wrap:anywhere;font-size:var(--fs-body-2);}
+  .cs-footer__bottom p{font-size:var(--fs-body-2);}
 }
 
 @media (max-width:480px){
   .cs-news-grid{grid-template-columns:1fr;}
+  .cs-hero__copy h1{font-size:var(--fs-h1);line-height:var(--lh-h1);}
+  .cs-solution__caption{padding-inline:var(--gutter);font-size:var(--fs-h2);}
 }
