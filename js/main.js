@@ -24,7 +24,7 @@
     });
     navList.querySelectorAll('a').forEach((a) => a.addEventListener('click', closeMenu));
     window.addEventListener('resize', () => {
-      if (window.innerWidth > 768) closeMenu();
+      if (window.innerWidth > 1024) closeMenu();
     });
   }
 
@@ -41,11 +41,11 @@
   const statementArticles = document.querySelectorAll('.cs-statement__articles .cs-article');
   const reduceMotionMq = window.matchMedia('(prefers-reduced-motion: reduce)');
   // Mobile viewports get the same plain-flow fallback as reduced-motion (see
-  // css/site.css's max-width:768px block, which matches this breakpoint
+  // css/site.css's max-width:1024px block, which matches this breakpoint
   // exactly) — the pinned/scroll-linked effects below are 1920px-desktop-scale
   // and are fragile/cramped at phone widths, so every effect's scroll handler
   // below also bails out when mobileMq matches, same as reduceMotionMq.
-  const mobileMq = window.matchMedia('(max-width: 768px)');
+  const mobileMq = window.matchMedia('(max-width: 1024px)');
   const isDesktopMotion = () => !reduceMotionMq.matches && !mobileMq.matches;
   const smoothstep = (t) => t * t * (3 - 2 * t);
 

@@ -345,7 +345,7 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
   font-size:var(--fs-body-1);line-height:var(--lh-body);}
 
 /* =========================================================
-   Mobile (<=768px, same edge as the shared kit's token-scale breakpoint)
+   Mobile/tablet (<=1024px — pinned/sticky effects break below this width)
    Several sections above are built around 1920px-desktop-scale pinned
    scroll effects (position:sticky tracks driven by JS scroll math). At
    mobile widths these are switched OFF and fall back to the same plain
@@ -353,7 +353,7 @@ body{background:var(--cs-white);font-weight:var(--cs-fw-base);}
    establish for each effect — see js/main.js's mobileMq guards, which
    mirror this breakpoint exactly so CSS and JS agree on when "mobile" begins.
    ========================================================= */
-@media (max-width:768px){
+@media (max-width:1024px){
     /* ---- nav: collapse the 4 links behind a hamburger toggle; the logo stays
       visible at all times. Existing scroll-transparency (.is-scrolled)
      is untouched — it still toggles background/color the same way. ---- */
